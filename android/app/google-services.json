@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "910878509521",
+    "firebase_url": "https://gomodi-ee0d7.firebaseio.com",
+    "project_id": "gomodi-ee0d7",
+    "storage_bucket": "gomodi-ee0d7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:910878509521:android:a9cad9d89d0b2f7194b8f0",
+        "android_client_info": {
+          "package_name": "basketApp.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "910878509521-charrbvv5uv5d8mlq68oikb2i48vjm2k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_wgTE-1n_zL0qZQAI7LdFWrXRPpnWyjo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "910878509521-charrbvv5uv5d8mlq68oikb2i48vjm2k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:910878509521:android:b2f94e3ab579b8eb94b8f0",
+        "android_client_info": {
+          "package_name": "com.shipco.basketapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "910878509521-charrbvv5uv5d8mlq68oikb2i48vjm2k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_wgTE-1n_zL0qZQAI7LdFWrXRPpnWyjo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "910878509521-charrbvv5uv5d8mlq68oikb2i48vjm2k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
