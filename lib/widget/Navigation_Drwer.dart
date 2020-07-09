@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:basketapp/Feedback_Screen.dart';
 import 'package:basketapp/HomeScreen.dart';
 import 'package:basketapp/admin/AdminConsole.dart';
 import 'package:basketapp/database/Auth.dart';
@@ -9,6 +10,7 @@ import 'package:basketapp/setting_screen.dart';
 import 'package:basketapp/widget/WidgetFactory.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
 class Navigation_Drawer extends StatefulWidget {
   Navigation_Drawer(this.auth);
@@ -25,14 +27,19 @@ enum AuthStatus {
 }
 
 class _Navigation_Drawer extends State<Navigation_Drawer> {
-  String name = 'My Wishlist';
   AuthStatus authStatus = AuthStatus.noSignIn;
   FirebaseUser firebaseUser;
   File _image;
+  final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
+
+  Position _currentPosition;
+  String _currentAddress;
 
   @override
   void initState() {
     super.initState();
+    _getCurrentLocation();
+    _getAddressFromLatLng();
     widget.auth.getCurrentUser().then((userId) {
       setState(() {
         authStatus = userId == null ? AuthStatus.noSignIn : AuthStatus.SignIn;
@@ -50,15 +57,18 @@ class _Navigation_Drawer extends State<Navigation_Drawer> {
 
   Widget _getUserProfile() {
     return UserAccountsDrawerHeader(
-      accountName: Text("Rana"),
-      accountEmail: Text("rana@log.in"),
+      //accountName: Text("Rana"),
+      accountEmail: Text("${firebaseUser.email}"),
       currentAccountPicture: CircleAvatar(
         backgroundColor: Colors.black,
-        child: Text("Prana"),
+        child: WidgetFactory()
+            .getImageFromDatabase(context, firebaseUser.photoUrl),
+
       ),
       otherAccountsPictures: [
         CircleAvatar(
           backgroundColor: Colors.black,
+          backgroundImage: ExactAssetImage('images/logo.png'),
           child: Text("K"),
         ),
       ],
@@ -106,6 +116,15 @@ class _Navigation_Drawer extends State<Navigation_Drawer> {
         children: <Widget>[
           _getUserProfile(),
           //_getNavBarListWidget(name, Icons.favorite),
+          Card(
+            child: _currentAddress == null ? CircularProgressIndicator() : Row(
+              children: [
+                Icon(Icons.location_city),
+
+                Text(_currentAddress),
+              ],
+            ),
+          ),
           new Divider(),
           _getNavBarListWidget("Order History", Icons.history),
           new Divider(),
@@ -117,8 +136,8 @@ class _Navigation_Drawer extends State<Navigation_Drawer> {
           new Divider(),
           _getNavBarListWidget("Logout", Icons.local_grocery_store),
           new Divider(),
-          _getNavBarListWidget("Admin", Icons.local_grocery_store),
-          new Divider(),
+          _getNavBarListWidget("Feedback", Icons.feedback),
+          //new Divider(),
         ],
       ),
     );
@@ -161,7 +180,11 @@ class _Navigation_Drawer extends State<Navigation_Drawer> {
             } else if (text == "Dashboard") {} else if (text == "Admin") {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => AdminConsole()));
-            } else if (text == "Order History") {
+            } else if (text == "Feedback") {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Feedback_Screen()));
+            }
+            else if (text == "Order History") {
               Navigator.push(context,
                   MaterialPageRoute(
                       builder: (context) => OderHistory_Screen()));
@@ -177,11 +200,11 @@ class _Navigation_Drawer extends State<Navigation_Drawer> {
       child: ListView(
         children: <Widget>[
           _getHeaderWidget(),
-          _getNavBarListWidget("Home", Icons.help),
-          _getNavBarListWidget("Sign in", Icons.help),
+          _getNavBarListWidget("Home", Icons.home),
+          _getNavBarListWidget("Sign in", Icons.account_circle),
           _getNavBarListWidget("Settings", Icons.power_settings_new),
           _getNavBarListWidget("Help", Icons.help),
-          //_getNavBarListWidget("Sign in", Icons.airline_seat_flat),
+          //_getNavBarListWidget("Feedback", Icons.feedback),
         ],
       ),
     );
@@ -197,6 +220,35 @@ class _Navigation_Drawer extends State<Navigation_Drawer> {
     }
   }
 
+  _getCurrentLocation() {
+    geolocator
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+        .then((Position position) {
+      setState(() {
+        _currentPosition = position;
+      });
+
+      _getAddressFromLatLng();
+    }).catchError((e) {
+      print(e);
+    });
+  }
+
+  _getAddressFromLatLng() async {
+    try {
+      List<Placemark> p = await geolocator.placemarkFromCoordinates(
+          _currentPosition.latitude, _currentPosition.longitude);
+
+      Placemark place = p[0];
+
+      setState(() {
+        _currentAddress =
+        "${place.name}, ${place.locality}, ${place.postalCode}";
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
 
   Widget _getHeaderWidget() {
     return Container(

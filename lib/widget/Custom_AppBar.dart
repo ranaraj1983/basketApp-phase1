@@ -1,14 +1,18 @@
 import 'package:basketapp/Account_screen.dart';
+import 'package:basketapp/CustomOrder_Screen.dart';
 import 'package:basketapp/HomeScreen.dart';
 import 'package:basketapp/checkout_screen.dart';
 import 'package:basketapp/database/Auth.dart';
 import 'package:basketapp/database/DataCollection.dart';
 import 'package:basketapp/widget/WidgetFactory.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flappy_search_bar/flappy_search_bar.dart';
+import 'package:flappy_search_bar/search_bar_style.dart';
 import 'package:flutter/material.dart';
 import 'package:basketapp/widget/Cart_Counter.dart';
 import 'package:basketapp/model/Product_Item.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mobx/mobx.dart';
 import 'package:badges/badges.dart';
 
@@ -242,18 +246,26 @@ class Custom_AppBar {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(
-            'images/goMudilogo.png',
-            fit: BoxFit.contain,
-            height: 32,
-          ),
-
+          Text("Go Mudi", style: GoogleFonts.getFont('Roboto')),
         ],
-
       ),
-      backgroundColor: Colors.lime[400],
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(68.0),
+        child: SizedBox(
+          height: 80,
+          //padding: EdgeInsets.all(1.0),
+          child: SearchBar(
+            searchBarStyle: SearchBarStyle(
+              backgroundColor: Colors.yellow,
+              padding: EdgeInsets.all(1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+      ),
+      //backgroundColor: Colors.lime[400],
       actions: <Widget>[
-        IconButton(
+        /*IconButton(
           tooltip: 'Search',
           icon: const Icon(Icons.search),
           onPressed: () {
@@ -262,7 +274,7 @@ class Custom_AppBar {
               delegate: ItemSearchDelegate(),
             );
           },
-        ),
+        ),*/
 
         Observer(
             builder: (_) =>
@@ -272,13 +284,12 @@ class Custom_AppBar {
                     Badge(
                       elevation: 10,
                       toAnimate: false,
-                      position: BadgePosition.topRight(top: -5, right: 20),
+                      position: BadgePosition.topRight(top: -5, right: 10),
                       badgeContent: Text("${cartCounter.cartList.length}"),
                       child: IconButton(
-                        icon: Icon(
-                            Icons.shopping_cart, color: Colors.black, size: 35),
-                        onPressed: () =>
-                        {
+                        icon: Icon(Icons.shopping_cart,
+                            color: Colors.yellow, size: 35),
+                        onPressed: () => {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -287,37 +298,7 @@ class Custom_AppBar {
                         },
                       ),
                     ),
-                    /* Positioned(
-                      child: IconButton(
-                        icon: Icon(Icons.shopping_cart, color: Colors.black),
-                        onPressed: () =>
-                        {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Checkout(),
-                              ))
-                        },
-                      ),
-                    ),*/
-                    /* Positioned(
 
-                      child: Container(
-                        child: Text(
-                          "${cartCounter.cartList.length}",
-                          style: TextStyle(
-                              fontSize: 30, backgroundColor: Colors.pink),
-                        ),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(16.0),
-                                topRight: Radius.circular(16.0)
-                            )
-                        ),
-                      ),
-
-                    ),*/
                   ],
                 )
 
@@ -342,6 +323,9 @@ class Custom_AppBar {
     } else if (index == 1) {
       print("inside offer");
       var categoryList = DataCollection().getCategories();
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) => CustomOrder_Screen(),
+      ));
       categoryList.then((value) {
         value.documents.forEach((element) {
           //element.documentID;
@@ -364,23 +348,24 @@ class Custom_AppBar {
 
   Widget getButtomNavigation(BuildContext context, FirebaseUser firebaseUser) {
     return BottomNavigationBar(
+
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          title: Text('Home'),
+          icon: Icon(Icons.home, color: Colors.yellow),
+          title: Text('Home', style: TextStyle(color: Colors.yellow)),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.card_giftcard),
-          title: Text('Offer'),
+          icon: Icon(Icons.card_giftcard, color: Colors.yellow),
+          title: Text('Add Item', style: TextStyle(color: Colors.yellow)),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.assignment_ind),
-          title: Text('Profile'),
+          icon: Icon(Icons.assignment_ind, color: Colors.yellow),
+          title: Text('Profile', style: TextStyle(color: Colors.yellow)),
         ),
       ],
       currentIndex: selectedPosition,
       type: BottomNavigationBarType.fixed,
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: Colors.indigo,
       selectedItemColor: Colors.blue,
       unselectedItemColor: Colors.black,
       onTap: (index) {

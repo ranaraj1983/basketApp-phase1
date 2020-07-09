@@ -22,6 +22,24 @@ class DataCollection {
     return qs.documents;
   }
 
+  addCustomItem(String itemName, String quantity, String unit) async {
+    String userId = await Auth().getCurrentUserId();
+    firestoreInstance
+        .collection("User/${userId}/customOrder")
+        .document()
+        .setData({
+      'itemName': itemName,
+      'quantity': quantity,
+      'unit': unit
+    }).catchError((onError) {
+      return onError.toString();
+    }).then((value) {
+      return null;
+    }).whenComplete(() {
+      return null;
+    });
+  }
+
   void getDataFromDatabase() {
     String itemId;
     String itemName;

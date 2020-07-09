@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       ),
 
       //home: new Item_Screen(),
-      home: new MyHomePage(title: 'Go Mudi Grocery Shop'),
+      home: MyHomePage(title: 'Go Mudi Grocery Shop'),
     );
   }
 }
@@ -79,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
         width: 250.0,
         height: 250.0,
         child: new Image.asset(
-          'images/gro_TEST.jpg',
+          'images/logo.png',
         ),
       ),
     );

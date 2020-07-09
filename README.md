@@ -26,5 +26,8 @@ flutter build apk --split-per-abi
 
 /Users/dasinfosolutions/key.jks
 
+Known Issue:-
+1)CartSession or refresh null
+
 
 

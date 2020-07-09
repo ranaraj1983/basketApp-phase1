@@ -6,8 +6,10 @@ import 'package:basketapp/widget/Custom_AppBar.dart';
 import 'package:basketapp/widget/Custom_Drawer.dart';
 import 'package:basketapp/widget/Navigation_Drwer.dart';
 import 'package:basketapp/widget/WidgetFactory.dart';
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
 const String _kGalleryAssetsPackage = 'flutter_gallery_assets';
 
@@ -82,6 +84,7 @@ class home extends State<Home_screen> {
   @override
   void initState() {
     super.initState();
+
     Auth().getCurrentUser().then((user) {
       setState(() {
         firebaseUser = user;
@@ -98,17 +101,33 @@ class home extends State<Home_screen> {
         theme.textTheme.headline5.copyWith(color: Colors.black54);
     final TextStyle descriptionStyle = theme.textTheme.subhead;
     ShapeBorder shapeBorder;
+    var deviceData = MediaQuery.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
       drawer: Navigation_Drawer(new Auth()),
-      bottomNavigationBar: Custom_AppBar().getButtomNavigation(
-          context, firebaseUser),
+      bottomNavigationBar:
+          Custom_AppBar().getButtomNavigation(context, firebaseUser),
       appBar: Custom_AppBar().getAppBar(context),
       body: new SingleChildScrollView(
         child: Container(
           child: new Column(children: <Widget>[
-            new Row(
+            Row(children: [
+              SizedBox(
+                  height: 150.0,
+                  width: deviceData.size.width,
+                  child: Carousel(
+                    images: [
+                      ExactAssetImage("images/masala.jpg"),
+                      ExactAssetImage("images/spices.jpg"),
+                      ExactAssetImage("images/brandlogo.png"),
+                      ExactAssetImage("images/groceries.jpg"),
+                      ExactAssetImage("images/masala3.jpeg"),
+                      ExactAssetImage("images/masala4.jpeg")
+                    ],
+                  )),
+            ]),
+            Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -409,6 +428,7 @@ class home extends State<Home_screen> {
       ),
     );
   }
+
 
   Icon keyloch = new Icon(
     Icons.arrow_forward,
