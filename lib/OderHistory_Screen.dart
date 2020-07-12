@@ -9,6 +9,7 @@ import 'package:basketapp/model/Product_Item.dart';
 import 'package:basketapp/widget/Custom_AppBar.dart';
 import 'package:basketapp/widget/Navigation_Drwer.dart';
 import 'package:basketapp/widget/WidgetFactory.dart';
+import 'package:open_file/open_file.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -51,9 +52,9 @@ class _OrderHistory_Screen extends State<OderHistory_Screen> {
   }
 
   _generatePdfAndView(BuildContext context, var itemData) async {
-
-    PdfGenerator().generateInvoice();
- /*   final pdf.Document doc = pdf.Document(deflate: zlib.encode);
+    print(itemData);
+    PdfGenerator().generateInvoice(itemData, firebaseUser);
+    /* final pdf.Document doc = pdf.Document(deflate: zlib.encode);
     print(itemData);
     doc.addPage(
       pdf.Page(
@@ -61,18 +62,27 @@ class _OrderHistory_Screen extends State<OderHistory_Screen> {
           child: pdf.Container(
             child: pdf.Column(children: [
               pdf.Text(itemData['orderId']),
+
             ]),
           ),
         ),
       ),
     );
-    final String dir = (await getApplicationDocumentsDirectory()).path;
-    final String exDir = (await getExternalStorageDirectory()).path;
-    final String path = '$dir/invoice.pdf';
+    final String dirPath = (await getApplicationDocumentsDirectory()).path;
+    //final String path = dir.path;
+    var orderId = itemData['orderId'];
+    final File file = File('$dirPath/order_${orderId}.pdf');
+    file.writeAsBytes(doc.save());
+    //Launch the file (used open_file package)
+    OpenFile.open('$dirPath/order_${orderId}.pdf');*/
+
+    //final String exDir = (await getExternalStorageDirectory()).path;
+/*    final String path = '$dir/order_${itemData['orderId']}.pdf';
     final File file = File(path);
     await file.writeAsBytes(doc.save());
-    print(exDir + " :: " + path);
-    Navigator.of(context).push(
+    OpenFile.open('$path/order_${itemData['orderId']}.pdf');
+    print(exDir + " :: " + path);*/
+    /*Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => PdfViewerPage(path: path),
       ),
@@ -194,249 +204,17 @@ class _OrderHistory_Screen extends State<OderHistory_Screen> {
                                     child: Text("Cancel"),
                                   ),
                                 ],
-
                               ),
                             ),
                           ],
                         ),
                       ),
-
                     ),
                   ],
                 ),
               );
-
-              /*GestureDetector(
-                onTap: () {
-                  _getAlertDialog(
-                      context, snapshot.data.documents[index].documentID);
-                },
-                child: Container(
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        color: Colors.blue,
-                        height: 100,
-                        width: 100,
-                      ),
-                      Expanded(
-                        child: Container(
-                          color: Colors.amber,
-                          width: 100,
-                        ),
-                      ),
-                      */ /*Container(
-                        margin:
-                        EdgeInsets.only(left: 5.0, right: 5.0, bottom: 5.0),
-                        color: Colors.black12,
-                        child: Card(
-                          elevation: 4.0,
-                          child: Column(
-                            children: <Widget>[
-                             */ /**/ /* Expanded(
-                                child: Text(itemData['orderId']),
-                              ),
-                              Expanded(),
-                              Expanded(),*/ /**/ /*
-
-                              */ /**/ /*Row(
-                                children: <Widget>[
-
-                                  Column(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Row(
-                                              children: <Widget>[
-                                                Text(itemData['orderId']),
-                                              ],
-                                            ),
-                                            VerticalDivider(),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text(itemData['totalAmount']
-                                                .toString()),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  Column(
-                                    children: <Widget>[
-                                      Row(
-                                        children: <Widget>[
-                                          RaisedButton(
-                                            onPressed: () {
-                                              _generatePdfAndView(
-                                                  context, itemData);
-                                              print("clicked");
-                                            },
-                                            child: Text("Invoice"),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: <Widget>[
-                                          Row(
-                                            children: <Widget>[
-                                              RaisedButton(
-                                                onPressed: () {
-                                                  _cancelOrder(
-                                                      context, itemData);
-                                                  print("clicked");
-                                                },
-                                                child: Text("Cancel"),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),*/ /**/ /*
-                            ],
-                          ),
-                        ),
-                      ),*/ /*
-
-                      //Text("test"),
-                    ],
-                  ),
-                ),
-
-              );*/
             },
           );
-          /* for(int i=0; i< snapshot.data.documents.length; i++) {
-          print(snapshot.data.documents[i].documentID);
-          Future subCollection =   DataCollection().getSubCollectionOfOrder(snapshot.data.documents[i].documentID);
-
-          subCollection.then(( value) {
-           */ /* if(value.connectionState == ConnectionState.done){
-              value.documents.forEach((output) async{
-                print(output);
-              });
-            }*/ /*
-
-            */ /*qs = value;
-            for(int j=0; i<value.documents.length;j++){
-              //value.documents[j].data['itemName'];
-            }*/ /*
-            //print(value);
-            setState(() {
-              //listItem.add(new Product_Item(itemId, itemName, imageUrl, description, quantity, price, orderStatus, paymentOption, totalAmount, location, orderDateTime, unit, brand, itemUniqueId));
-            });
-          });
-        }*/
-          //print(qs);
-          //return Text("");
-          return FutureBuilder(
-              future: DataCollection().getSubCollectionOfOrder(
-                  snapshot.data.documents[0].documentID),
-              builder: (_, snp) {
-                /*return   ListView.builder(
-                itemCount: snp.data.documents.length,
-                itemBuilder: (context, index) {
-                  var itemData = snp.data.documents[0].data;
-                  return Container(
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          margin:
-                          EdgeInsets.only(left: 5.0, right: 5.0, bottom: 5.0),
-                          color: Colors.black12,
-                          child: Card(
-                            elevation: 4.0,
-                            child: Column(
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Column(
-                                      children: <Widget>[
-                                        WidgetFactory().getImageFromDatabase(
-                                            context, itemData['imageUrl']),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: Row(
-                                            children: <Widget>[
-                                              Row(
-                                                children: <Widget>[
-                                                  Text(itemData['itemName']),
-                                                ],
-                                              ),
-                                              VerticalDivider(),
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: Row(
-                                            children: <Widget>[
-                                              Text(itemData['price']),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    Column(
-                                      children: <Widget>[
-                                        Row(
-                                          children: <Widget>[
-                                            RaisedButton(
-                                              onPressed: () {
-                                                _generatePdfAndView(
-                                                    context, itemData);
-                                                print("clicked");
-                                              },
-                                              child: Text("Invoice"),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: <Widget>[
-                                            Row(
-                                              children: <Widget>[
-                                                RaisedButton(
-                                                  onPressed: () {
-                                                    _cancelOrder(context, itemData);
-                                                    print("clicked");
-                                                  },
-                                                  child: Text("Cancel"),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        //Text("test"),
-                      ],
-                    ),
-                  );
-                },
-              );*/
-              });
-          //DataCollection.getSubCollectionOfOrder(snapshot.data.documents[0].documentID);
-
         }
       },
     );
@@ -542,7 +320,7 @@ class _OrderHistory_Screen extends State<OderHistory_Screen> {
                       shrinkWrap: true,
                       itemCount: snp.data.documents.length,
                       itemBuilder: (context, index) {
-                        var itemData = snp.data.documents[0].data;
+                        var itemData = snp.data.documents[index].data;
                         return Container(
                           child: Column(
                             children: <Widget>[
@@ -585,37 +363,7 @@ class _OrderHistory_Screen extends State<OderHistory_Screen> {
                                             )
                                           ],
                                         ),
-                                        /* Column(
-                                        children: <Widget>[
-                                          Row(
-                                            children: <Widget>[
-                                              RaisedButton(
-                                                onPressed: () {
-                                                  _generatePdfAndView(
-                                                      context, itemData);
-                                                  print("clicked");
-                                                },
-                                                child: Text("Invoice"),
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: <Widget>[
-                                              Row(
-                                                children: <Widget>[
-                                                  RaisedButton(
-                                                    onPressed: () {
-                                                      _cancelOrder(context, itemData);
-                                                      print("clicked");
-                                                    },
-                                                    child: Text("Cancel"),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),*/
+
                                       ],
                                     ),
                                   ],
@@ -628,17 +376,7 @@ class _OrderHistory_Screen extends State<OderHistory_Screen> {
                         );
                       },
                     );
-                    /*return  Container(
-                    height: 600,
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: <Widget>[
-                        Text("YOur production"),
-                      ],
-                    ),
 
-                  );*/
-                    //Text("YOur production");
 
                   }
                 }),

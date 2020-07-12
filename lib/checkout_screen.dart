@@ -54,120 +54,115 @@ class _CheckOut_Screen extends State<Checkout> {
 
   @override
   Widget build(BuildContext context) {
-
-
-    final double height = MediaQuery.of(context).size.height;
-
-
-
     return new Scaffold(
-        key: _scaffoldKey,
-        drawer: Navigation_Drawer(new Auth()),
-        appBar: Custom_AppBar().getAppBar(context),
-        bottomNavigationBar:
-        Custom_AppBar().getButtomNavigation(context, firebaseUser),
-        //Custom_Drawer().getButtomNavigation(),
-        body: ListView(
-          padding: const EdgeInsets.all(8),
-          children: <Widget>[
-            Container(
-              alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(
-                  left: 12.0, top: 5.0, right: 0.0, bottom: 5.0),
-              child: new Text(
-                'Delivery Address',
-                style: TextStyle(
-                    color: Colors.black87,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.0),
-              ),
+      key: _scaffoldKey,
+      drawer: Navigation_Drawer(new Auth()),
+      appBar: Custom_AppBar().getAppBar(context),
+      bottomNavigationBar:
+          Custom_AppBar().getButtomNavigation(context, firebaseUser),
+      body: _getCheckOutBodyWidget(),
+    );
+  }
+
+  Widget _getCheckOutBodyWidget() {
+    final double height = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Card(
+            margin:
+                EdgeInsets.only(left: 12.0, top: 5.0, right: 0.0, bottom: 5.0),
+            child: new Text(
+              'Delivery Address',
+              style: TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0),
             ),
-            Container(
-              color: Colors.amber[500],
-              child: firebaseUser == null ? Text("") : WidgetFactory()
-                  .getCustomerAddress(context, formKey),
+          ),
+          Container(
+            width: width,
+            color: Colors.white10,
+            child: firebaseUser == null
+                ? Text("")
+                : WidgetFactory().getCustomerAddress(context, formKey),
+          ),
+          Container(
+            alignment: Alignment.topLeft,
+            margin:
+                EdgeInsets.only(left: 12.0, top: 5.0, right: 0.0, bottom: 5.0),
+            child: Text(
+              'Order Summary',
+              style: TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0),
             ),
-            Container(
-              alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(
-                  left: 12.0, top: 5.0, right: 0.0, bottom: 5.0),
-              child: Text(
-                'Order Summary',
-                style: TextStyle(
-                    color: Colors.black87,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.0),
-              ),
+          ),
+          SizedBox(
+            //height: height,
+            width: width,
+            child: Observer(
+              builder: (_) => Custom_AppBar().getCartListWidgetListView(),
             ),
-            Container(
-                height: 300,
-                color: Colors.blueGrey,
-                child: Observer(
-                    builder: (_) =>
-                        Custom_AppBar().getCartListWidgetListView(Checkout())
-                )
-            ),
-            Container(
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  IconButton(icon: Icon(Icons.info), onPressed: null),
-                  Text(
-                    'Total :',
-                    style: TextStyle(
-                        fontSize: 17.0,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold),
+          ),
+          Container(
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                IconButton(icon: Icon(Icons.info), onPressed: null),
+                Text(
+                  'Total :',
+                  style: TextStyle(
+                      fontSize: 17.0,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold),
+                ),
+                Observer(
+                  builder: (_) => Stack(
+                    children: <Widget>[
+                      Text(
+                        '\₹ ${cartCounter.totalPrice.value}',
+                        style: TextStyle(fontSize: 17.0, color: Colors.black54),
+                      ),
+                    ],
                   ),
-                  Observer(
-                    builder: (_) =>
-                        Stack(
-                          children: <Widget>[
-
-                            Text(
-                              '\₹ ${cartCounter.totalPrice.value}',
-                              style: TextStyle(
-                                  fontSize: 17.0, color: Colors.black54),
-                            ),
-                          ],
-                        ),
-
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: OutlineButton(
+                        borderSide: BorderSide(color: Colors.amber.shade500),
+                        child: const Text('CONFIRM ORDER'),
+                        textColor: Colors.amber.shade500,
+                        onPressed: () async {
+                          if (await Auth().getCurrentUserFuture() != null) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        Payment_Screen(totalPrice)));
+                          } else {
+                            WidgetFactory().logInDialog(context);
+                          }
+                        },
+                        shape: new OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        )),
                   ),
-
-
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: OutlineButton(
-                          borderSide: BorderSide(color: Colors.amber.shade500),
-                          child: const Text('CONFIRM ORDER'),
-                          textColor: Colors.amber.shade500,
-                          onPressed: () async {
-                            if (await Auth().getCurrentUserFuture() != null) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          Payment_Screen(totalPrice)));
-                            } else {
-                              WidgetFactory()
-                                  .logInDialog(context);
-                            }
-                          },
-                          shape: new OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          )),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        )
-
-
+          ),
+        ],
+      ),
     );
   }
 

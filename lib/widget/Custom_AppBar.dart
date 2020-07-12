@@ -37,38 +37,39 @@ class Custom_AppBar {
     return cartCounter.cartList;
   }
 
-  Widget getCartListWidgetListView(Checkout checkout) {
-    return ListView.builder(
+  Widget getCartListWidgetListView() {
+    return Container(
+        child: ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            //shrinkWrap: true,
+            itemCount: cartCounter.cartList.length,
+            itemBuilder: (BuildContext context, int index) {
+              int quan = int.parse(cartCounter.cartList[index].quantity);
+              int price = int.parse(cartCounter.cartList[index].price);
+              int total = quan * price;
 
-      //scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        itemCount: cartCounter.cartList.length,
-        itemBuilder: (BuildContext context, int index) {
-          int quan = int.parse(cartCounter.cartList[index].quantity);
-          int price = int.parse(cartCounter.cartList[index].price);
-          int total = quan * price;
-          return Container(
-            height: 150,
-
-            //margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-
-              children: <Widget>[
-
-                Card(
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.only(left: 10, bottom: 10, right: 10, top: 10),
-                    margin: new EdgeInsets.only(
-                        left: 20.0, right: 20.0, top: 8.0, bottom: 5.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Image.network(cartCounter.cartList[index]
-                              .imageUrl,
-                            fit: BoxFit.fitWidth, width: 100, height: 100,)
-                        ),
+              return Column(
+                //crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Card(
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.only(
+                          left: 10, bottom: 10, right: 10, top: 10),
+                      margin: new EdgeInsets.only(
+                          left: 20.0, right: 20.0, top: 8.0, bottom: 5.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                              child: Image.network(
+                            cartCounter.cartList[index].imageUrl,
+                            fit: BoxFit.fitWidth,
+                            width: 100,
+                            height: 100,
+                          )),
                           Expanded(
                             child: Column(
                               children: [
@@ -79,147 +80,58 @@ class Custom_AppBar {
                                             fontSize: 16.0,
                                             color: Colors.black87,
                                             fontWeight: FontWeight.bold)),
-
-
-
                                   ],
                                 ),
-
-
                               ],
                             ),
-
                           ),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-
-                                  Text(cartCounter.cartList[index].quantity,
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          color: Colors.black87,
-                                          fontWeight: FontWeight.bold)),
-                                  Text("X"),
-                                  Text(cartCounter.cartList[index].price,
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          color: Colors.black87,
-                                          fontWeight: FontWeight.bold)),
-
-                                  Text(" = " + price.toString() + ""),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  IconButton(
-                                    tooltip: "Delete Item",
-                                    icon: Icon(
-                                        Icons.delete_forever, color: Colors.red,
-                                        size: 35),
-                                    onPressed: () =>
-                                    {
-                                      print(cartCounter.cartList[index].itemId),
-                                      Custom_AppBar().removeItemFromCart(cartCounter
-                                          .cartList[index].itemUniqueId),
-                                    },
-                                  ),
-                                ],
-                              ),
-
-
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-
-                  ),
-
-                 /* margin: new EdgeInsets.only(
-                      left: 20.0, right: 20.0, top: 8.0, bottom: 5.0),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
-                  elevation: 4.0,
-
-                  child: Row(
-
-                    children: [
-                      Column(
-                        children: [
-                          SizedBox(
-                            child: Image.network(cartCounter.cartList[index]
-                                .imageUrl,
-                              fit: BoxFit.fitWidth, width: 100, height: 100,),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-
-
-
-                                  Expanded(
-                                    child: Text(cartCounter.cartList[index].itemName,
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(cartCounter.cartList[index].quantity,
                                         style: TextStyle(
                                             fontSize: 16.0,
                                             color: Colors.black87,
                                             fontWeight: FontWeight.bold)),
-                                  ),
-
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(cartCounter.cartList[index].quantity,
-                                  style: TextStyle(
-                                      fontSize: 16.0,
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.bold)),
-                              Text("X"),
-                              Text(cartCounter.cartList[index].price,
-                                  style: TextStyle(
-                                      fontSize: 16.0,
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              IconButton(
-                                tooltip: "Delete Item",
-                                icon: Icon(
-                                    Icons.delete_forever, color: Colors.red,
-                                    size: 35),
-                                onPressed: () =>
-                                {
-                                  print(cartCounter.cartList[index].itemId),
-                                  Custom_AppBar().removeItemFromCart(cartCounter
-                                      .cartList[index].itemUniqueId),
-                                },
-                              ),
-                            ],
+                                    Text("X"),
+                                    Text(cartCounter.cartList[index].price,
+                                        style: TextStyle(
+                                            fontSize: 16.0,
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.bold)),
+                                    Text(" = " + price.toString() + ""),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      tooltip: "Delete Item",
+                                      icon: Icon(Icons.delete_forever,
+                                          color: Colors.red, size: 35),
+                                      onPressed: () => {
+                                        print(
+                                            cartCounter.cartList[index].itemId),
+                                        Custom_AppBar().removeItemFromCart(
+                                            cartCounter
+                                                .cartList[index].itemUniqueId),
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
+                    ),
+                  ),
+                ],
 
-
-                    ],
-                  ),*/
-                ),
-
-
-              ],
-
-
-              // Divider(height: 15.0),
-
-            ),
-          );
-        });
+                // Divider(height: 15.0),
+              );
+            }));
   }
 
   void addItemToCart(String itemId, String itemName, String imageUrl,

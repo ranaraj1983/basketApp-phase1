@@ -133,7 +133,7 @@ class _CustomOrder_Screen extends State<CustomOrder_Screen> {
       // Email & password matched our validation rules
       // and are saved to _email and _password fields.
       var out = DataCollection().addCustomItem(_itemName, _quantity, _unit);
-      print(out);
+      print(out.toString());
     } else {
       showInSnackBar('Please fix the errors in red before submitting.');
     }

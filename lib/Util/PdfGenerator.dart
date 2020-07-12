@@ -1,14 +1,16 @@
+import 'dart:async';
 import 'dart:io';
+import 'package:basketapp/database/DataCollection.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
-import 'package:syncfusion_flutter_core/core.dart';
 
-class PdfGenerator{
-
-  Future<void> generateInvoice() async {
+class PdfGenerator {
+  Future<void> generateInvoice(var itemData, FirebaseUser firebaseUser) async {
     //Create a PDF document.
     final PdfDocument document = PdfDocument();
     //Add page to the PDF
@@ -18,11 +20,24 @@ class PdfGenerator{
     //Draw rectangle
     page.graphics.drawRectangle(
         bounds: Rect.fromLTWH(0, 0, pageSize.width, pageSize.height),
-        pen: PdfPen(PdfColor(142, 170, 219, 255)));
+        pen: PdfPen(PdfColor(0, 170, 219, 255)));
     //Generate PDF grid.
-    final PdfGrid grid = getGrid();
+    final PdfGrid grid = await getGrid(itemData);
+    final user = await DataCollection().getUserDetails();
+    String userName = user['displayName'];
     //Draw the header section by creating text element
-    final PdfLayoutResult result = drawHeader(page, pageSize, grid);
+    String date = DateTime.parse(itemData['orderDate'].toDate().toString())
+        .toLocal()
+        .toString();
+    final String invoiceNumber =
+        'Invoice Number: ${itemData['orderId']} \r\n\r\n Date: ${date}';
+
+    String address =
+        "Bill To: \r\n\r\n ${user['displayName']}, \r\n\r\n${user['street']}, ${user['city']}, ${user['district']}, "
+        '\r\n\r\n${user['pincode']} ${user['state']}, \r\n\r\n${user['mobileNumber']}';
+
+    final PdfLayoutResult result =
+        drawHeader(page, pageSize, grid, invoiceNumber, address);
     //Draw grid
     drawGrid(page, grid, result);
     //Add invoice footer
@@ -34,14 +49,16 @@ class PdfGenerator{
     //Get the storage folder location using path_provider package.
     final Directory directory = await getApplicationDocumentsDirectory();
     final String path = directory.path;
-    final File file = File('$path/output.pdf');
+    var orderId = itemData['orderId'];
+    final File file = File('$path/order_${orderId}.pdf');
     file.writeAsBytes(bytes);
     //Launch the file (used open_file package)
-    OpenFile.open('$path/output.pdf');
+    OpenFile.open('$path/order_${orderId}.pdf');
     print(path);
   }
 
-  PdfLayoutResult drawHeader(PdfPage page, Size pageSize, PdfGrid grid) {
+  PdfLayoutResult drawHeader(PdfPage page, Size pageSize, PdfGrid grid,
+      String invoiceNumber, String address) {
     //Draw rectangle
     page.graphics.drawRectangle(
         brush: PdfSolidBrush(PdfColor(91, 126, 215, 255)),
@@ -57,7 +74,7 @@ class PdfGenerator{
         bounds: Rect.fromLTWH(400, 0, pageSize.width - 400, 90),
         brush: PdfSolidBrush(PdfColor(65, 104, 205)));
 
-    page.graphics.drawString('\$' + getTotalAmount(grid).toString(),
+    page.graphics.drawString('INR' + getTotalAmount(grid).toString(),
         PdfStandardFont(PdfFontFamily.helvetica, 18),
         bounds: Rect.fromLTWH(400, 0, pageSize.width - 400, 100),
         brush: PdfBrushes.white,
@@ -75,11 +92,8 @@ class PdfGenerator{
             lineAlignment: PdfVerticalAlignment.bottom));
     //Create data foramt and convert it to text.
     final DateFormat format = DateFormat.yMMMMd('en_US');
-    final String invoiceNumber = 'Invoice Number: 2058557939\r\n\r\nDate: ' +
-        format.format(DateTime.now());
+
     final Size contentSize = contentFont.measureString(invoiceNumber);
-    const String address =
-        'Bill To: \r\n\r\nAbraham Swearegin, \r\n\r\nUnited States, California, San Mateo, \r\n\r\n9920 BridgePointe Parkway, \r\n\r\n9365550136';
 
     PdfTextElement(text: invoiceNumber, font: contentFont).draw(
         page: page,
@@ -135,7 +149,9 @@ class PdfGenerator{
         Offset(pageSize.width, pageSize.height - 100));
 
     const String footerContent =
-        '800 Interchange Blvd.\r\n\r\nSuite 2501, Austin, TX 78721\r\n\r\nAny Questions? support@adventure-works.com';
+        'wwww.gomudi.com \r\n\r\n Lenin Sarani, Santipur, Nadia,'
+        ' Pin-741404 \r\n\r\nAny Questions? support@gomudi.com or call '
+        ' + 91 7063530676';
 
     //Added 30 as a margin for the layout
     page.graphics.drawString(
@@ -145,7 +161,7 @@ class PdfGenerator{
   }
 
   //Create PDF grid and return
-  PdfGrid getGrid() {
+  Future<PdfGrid> getGrid(var itemData) async {
     //Create a PDF grid
     final PdfGrid grid = PdfGrid();
     //Secify the columns count to the grid.
@@ -161,13 +177,19 @@ class PdfGenerator{
     headerRow.cells[2].value = 'Price';
     headerRow.cells[3].value = 'Quantity';
     headerRow.cells[4].value = 'Total';
-    //Add rows
-    addProducts('CA-1098', 'AWC Logo Cap', 8.99, 2, 17.98, grid);
-    addProducts('LJ-0192', 'Long-Sleeve Logo Jersey,M', 49.99, 3, 149.97, grid);
-    addProducts('So-B909-M', 'Mountain Bike Socks,M', 9.5, 2, 19, grid);
-    addProducts('LJ-0192', 'Long-Sleeve Logo Jersey,M', 49.99, 4, 199.96, grid);
-    addProducts('FK-5136', 'ML Fork', 175.49, 6, 1052.94, grid);
-    addProducts('HL-U509', 'Sports-100 Helmet,Black', 34.99, 1, 34.99, grid);
+    QuerySnapshot itemList = await DataCollection()
+        .getSubCollectionOfOrder(itemData['orderId']);
+
+
+    itemList.documents.forEach((element) {
+      double price = double.parse(element.data['price']);
+      int quan = int.parse(element.data['quantity']);
+      addProducts(element.data['itemId'], element.data['itemName'], price, quan,
+          price * quan, grid);
+      print(element.data['itemName']);
+    });
+
+
     //Apply the table built-in style
     grid.applyBuiltInStyle(PdfGridBuiltInStyle.listTable4Accent5);
     //Set gird columns width
