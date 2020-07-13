@@ -1,4 +1,5 @@
-
+import 'package:basketapp/PopularPage_Screen.dart';
+import 'package:basketapp/WhatsNew_Screen.dart';
 import 'package:basketapp/database/Auth.dart';
 import 'package:basketapp/database/DataCollection.dart';
 import 'package:basketapp/item_screen.dart';
@@ -346,7 +347,10 @@ class home extends State<Home_screen> {
                     _verticalD(),
                     new GestureDetector(
                       onTap: () {
-                        //Navigator.push(context, MaterialPageRoute(builder: (context)=> Item_Screen(toolbarname: 'Fruits & Vegetables',)));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PopularPage_Screen()));
                       },
                       child: new Text(
                         'Popular',
@@ -361,7 +365,8 @@ class home extends State<Home_screen> {
                       children: <Widget>[
                         new GestureDetector(
                           onTap: () {
-                            //Navigator.push(context, MaterialPageRoute(builder: (context)=> Item_Screen(toolbarname: 'Fruits & Vegetables',)));
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => WhatsNew_Screen()));
                           },
                           child: new Text(
                             'Whats New',
@@ -389,11 +394,11 @@ class home extends State<Home_screen> {
                       return GridView.builder(
                           primary: true,
                           physics: ScrollPhysics(),
-                          padding: const EdgeInsets.all(10.0),
+                          padding: const EdgeInsets.all(5.0),
                           shrinkWrap: true,
                           gridDelegate:
                           new SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2),
+                              crossAxisCount: 3),
                           itemCount: snapshot.data.length,
                           itemBuilder: (context, index) {
                             var d = snapshot.data;
@@ -439,3 +444,7 @@ class home extends State<Home_screen> {
         margin: EdgeInsets.only(left: 5.0, right: 0.0, top: 5.0, bottom: 0.0),
       );
 }
+
+
+
+

@@ -22,6 +22,16 @@ class DataCollection {
     return qs.documents;
   }
 
+  Future getPopularProductList() {
+    //TODO need need implement
+    getListOfProductItem();
+  }
+
+  Future getNewlyAddedProduct() {
+    //TODO need need implement
+    getListOfProductItem();
+  }
+
   addCustomItem(String itemName, String quantity, String unit) async {
     String userId = await Auth().getCurrentUserId();
     firestoreInstance

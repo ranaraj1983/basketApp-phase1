@@ -155,24 +155,73 @@ class Custom_AppBar {
 
   Widget getAppBar(BuildContext context) {
     return AppBar(
+      //leading: new Icon(Icons.menu,color: Colors.yellowAccent,),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Go Mudi", style: GoogleFonts.getFont('Roboto')),
+          Text(
+            "Go Mudi",
+            style: GoogleFonts.lobster(
+              textStyle: Theme.of(context).textTheme.headline5,
+              fontSize: 40,
+              fontWeight: FontWeight.w400,
+              fontStyle: FontStyle.normal,
+              color: Colors.yellowAccent,
+            ),
+          ),
         ],
       ),
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(68.0),
+
         child: SizedBox(
-          height: 80,
+
+          height: MediaQuery
+              .of(context)
+              .size
+              .height / 15,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width / 1.2,
           //padding: EdgeInsets.all(1.0),
-          child: SearchBar(
+          child: TextField(
+            autofocus: false,
+            onTap: () {
+              showSearch(
+                context: context,
+                delegate: ItemSearchDelegate(),
+              );
+            },
+            //controller: editingController,
+            decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.yellowAccent,
+                //labelText: "Search",
+                hintText: "Search",
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+          ),
+          /*IconButton(
+            tooltip: 'Search',
+            icon: const Icon(Icons.search),
+
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: ItemSearchDelegate(),
+              );
+            },
+          ),*/
+          /*SearchBar(
             searchBarStyle: SearchBarStyle(
               backgroundColor: Colors.yellow,
               padding: EdgeInsets.all(1),
               borderRadius: BorderRadius.circular(10),
             ),
-          ),
+            onSearch: _getSearchItem,
+          ),*/
         ),
       ),
       //backgroundColor: Colors.lime[400],
@@ -264,15 +313,18 @@ class Custom_AppBar {
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home, color: Colors.yellow),
-          title: Text('Home', style: TextStyle(color: Colors.yellow)),
+          title: Text('Home', style: TextStyle(color: Colors.yellow,
+              fontWeight: FontWeight.bold)),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.card_giftcard, color: Colors.yellow),
-          title: Text('Add Item', style: TextStyle(color: Colors.yellow)),
+          title: Text('Add Item', style: TextStyle(
+              color: Colors.yellow, fontWeight: FontWeight.bold)),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.assignment_ind, color: Colors.yellow),
-          title: Text('Profile', style: TextStyle(color: Colors.yellow)),
+          title: Text('Profile', style: TextStyle(
+              color: Colors.yellow, fontWeight: FontWeight.bold)),
         ),
       ],
       currentIndex: selectedPosition,
@@ -288,6 +340,10 @@ class Custom_AppBar {
     );
   }
 
+
+  Future<List<Product_Item>> _getSearchItem(String text) {
+    return DataCollection().getListOfProductItem();
+  }
 }
 
 class ItemSearchDelegate extends SearchDelegate<Product_Item> {
@@ -296,19 +352,26 @@ class ItemSearchDelegate extends SearchDelegate<Product_Item> {
 
   @override
   List<Widget> buildActions(BuildContext context) {
-    return [IconButton(icon: Icon(Icons.clear), onPressed: () {
-      query = "";
-    })
+    return [
+      IconButton(
+          icon: Icon(Icons.clear),
+          onPressed: () {
+            query = "";
+          }
+      )
     ];
   }
 
   @override
   Widget buildLeading(BuildContext context) {
-    return IconButton(onPressed: () async {
-      await DataCollection().getListOfProductItem();
-      //print(output);
-      close(context, null);
-    }, icon: Icon(Icons.arrow_back));
+    return IconButton(
+        onPressed: () async {
+          await DataCollection().getListOfProductItem();
+          //print(output);
+          close(context, null);
+        },
+        icon: AnimatedIcon(
+          icon: AnimatedIcons.menu_arrow, progress: transitionAnimation,));
   }
 
   @override
@@ -340,13 +403,13 @@ class ItemSearchDelegate extends SearchDelegate<Product_Item> {
                         return ListView.builder(
                             scrollDirection: Axis.vertical,
                             shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
                             itemCount: snp.data.length,
                             itemBuilder: (_, ind) {
                               return !snp.data[ind].data['itemName']
                                   .toString()
                                   .toLowerCase()
-                                  .
-                              contains(query.toLowerCase())
+                                  .contains(query.toLowerCase())
                                   ? Text("")
                                   : Container(
                                 child: WidgetFactory().getSearchListView(

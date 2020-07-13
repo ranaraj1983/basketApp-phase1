@@ -65,7 +65,7 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 flutter_icons:
-  image_path: 'images/logo.png'
+  image_path: 'images/gomudilogo.png'
   android: true
   ios: true
 

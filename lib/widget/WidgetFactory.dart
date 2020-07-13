@@ -22,22 +22,33 @@ class WidgetFactory {
 
   Widget getSearchListView(BuildContext context, var categorySnapshot, var itemSnapshot) {
     return ListView(
+      physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Container(
-            child: new FittedBox(
-              child: Material(
-                color: Colors.white,
-                elevation: 14.0,
-                borderRadius: BorderRadius.circular(24.0),
-                shadowColor: Color(0x802196F3),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
+        SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Expanded(
+                    child: _populateSearList(
+                        context, categorySnapshot, itemSnapshot),
+                  ),
+                  Expanded(
+                    child: getImageFromDatabase(
+                        context, itemSnapshot.data['imageUrl']),
+                  ),
+                  Expanded(
+                    child: addToCartButton(itemSnapshot),
+                  ),
+                ],
+              ),
+
+              /*Container(
                       child: Padding(
                         padding: const EdgeInsets.only(left: 0.0),
                         child: _populateSearList(
@@ -46,20 +57,17 @@ class WidgetFactory {
                     ),
                     //getImageFromDatabase(context,itemSnapshot.data['imageUrl']),
                     Container(
-                      width: 250,
-                      height: 200,
+                      //width: 250,
+                      //height: 200,
                       child: getImageFromDatabase(
                           context, itemSnapshot.data['imageUrl']),
                     ),
                     Container(
-                      width: 250,
-                      height: 200,
+                      //width: 250,
+                      //height: 200,
                       child: addToCartButton(itemSnapshot),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                    ),*/
+            ],
           ),
         ),
       ],
@@ -227,44 +235,39 @@ class WidgetFactory {
     return Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Row(
-              children: <Widget>[
-                Text(
-                  itemSnapshot.data['itemName'],
-                  style: GoogleFonts.aBeeZee(
-                    //textStyle: Theme.of(context).textTheme.headline5,
-                    fontSize: 30,
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    color: Colors.blueAccent,
-                  ),
-                  textAlign: TextAlign.right,
+          Wrap(
+            children: [
+              Text(
+                itemSnapshot.data['itemName'],
+                style: GoogleFonts.aBeeZee(
+                  //textStyle: Theme.of(context).textTheme.headline5,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w400,
+                  //fontStyle: FontStyle.normal,
+                  color: Colors.blueAccent,
                 ),
-              ],
-            ),
+                textAlign: TextAlign.left,
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Container(
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Text(
-                      "\₹" + itemSnapshot.data['price'],
-                      style: GoogleFonts.aBeeZee(
-                        //textStyle: Theme.of(context).textTheme.headline5,
-                        fontSize: 25,
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
-                  ]),
-            ),
+          Wrap(
+            children: [
+              Text(
+                "\₹" + itemSnapshot.data['price'],
+                style: GoogleFonts.aBeeZee(
+                  //textStyle: Theme.of(context).textTheme.headline5,
+                  fontSize: 25,
+                  //fontWeight: FontWeight.w400,
+                  //fontStyle: FontStyle.normal,
+                ),
+                textAlign: TextAlign.right,
+              ),
+            ],
           ),
-        ]);
+
+
+        ]
+    );
   }
 
   Widget addToCartButton(itemSnapshot) {
@@ -273,10 +276,10 @@ class WidgetFactory {
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Container(
         alignment: Alignment.center,
-        child: OutlineButton(
-            borderSide: BorderSide(color: Colors.amber.shade500),
+        child: RaisedButton(
+            color: Colors.yellowAccent,
             child: const Text('Add'),
-            textColor: Colors.amber.shade500,
+            textColor: Colors.black,
             onPressed: () {
               int random = new Random().nextInt(1000);
               if (quantity <= 0) quantity = 1;
@@ -290,8 +293,10 @@ class WidgetFactory {
                   random.toString() + "_" + itemSnapshot.data['itemName']);
             },
             shape: new OutlineInputBorder(
+
               borderRadius: BorderRadius.circular(30.0),
-            )),
+            )
+        ),
       ),
     );
   }
