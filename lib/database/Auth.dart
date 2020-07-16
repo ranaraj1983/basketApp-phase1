@@ -3,9 +3,12 @@ import 'package:basketapp/database/DataCollection.dart';
 import 'package:basketapp/model/Order.dart';
 import 'package:basketapp/model/User.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class BaseAuth {
-  Future<FirebaseUser>  signIn(String email, String password);
+  Future<FirebaseUser> signIn(String email, String password);
 
   Future<String> signUp(String email, String password);
 
@@ -16,6 +19,10 @@ abstract class BaseAuth {
   Future<void> signOut();
 
   Future<bool> isEmailVerified();
+
+  Future<FirebaseUser> signupWithFacebook(BuildContext context);
+
+  Future<void> resetPassword(String password);
 }
 
 
@@ -23,13 +30,69 @@ abstract class BaseAuth {
 class Auth implements BaseAuth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  Future<FirebaseUser> signIn(String email, String password)  async {
+  Future<FirebaseUser> signupWithGoogle(BuildContext context) async {
+    final GoogleSignIn _googleSignIn = GoogleSignIn();
+    final GoogleSignInAccount googleUser =
+        await _googleSignIn.signIn().catchError((onError) {
+      print(onError);
+    });
+    try {
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.getCredential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      final FirebaseUser user =
+          (await _firebaseAuth.signInWithCredential(credential)).user;
+      print("signed in " + user.displayName);
+      return user;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<FirebaseUser> signupWithFacebook(BuildContext context) async {
+    final FacebookLogin facebookSignIn = new FacebookLogin();
+    await facebookSignIn
+        .logIn(['email', 'public_profile']).then((result) async {
+      switch (result.status) {
+        case FacebookLoginStatus.loggedIn:
+          await _firebaseAuth
+              .signInWithCredential(FacebookAuthProvider.getCredential(
+                  accessToken: result.accessToken.token))
+              .then((user) {
+            Navigator.of(context).pushReplacementNamed("/home");
+            print("facebook signedin user :: ${user.toString()}");
+          }).catchError((onError) {
+            print(onError);
+          });
+          break;
+        case FacebookLoginStatus.error:
+          print("login error");
+          break;
+        case FacebookLoginStatus.cancelledByUser:
+          print("cancel by user");
+      }
+    }).catchError((onError) {
+      print(onError);
+    });
+  }
+
+  Future<void> resetPassword(String password) async {
+    FirebaseUser user = await _firebaseAuth.currentUser();
+    print(password);
+    user.updatePassword(password);
+  }
+
+  Future<FirebaseUser> signIn(String email, String password) async {
     AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
     FirebaseUser user = result.user;
     //String userId = user.uid;
     return user;
   }
+
   void handleError(e) {
     print(e);
   }

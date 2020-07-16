@@ -9,6 +9,13 @@ part of 'Cart_Counter.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$Cart_Counter on _Cart_Counter, Store {
+  Computed<int> _$getTotalComputed;
+
+  @override
+  int get getTotal => (_$getTotalComputed ??=
+          Computed<int>(() => super.getTotal, name: '_Cart_Counter.getTotal'))
+      .value;
+
   final _$totalPriceAtom = Atom(name: '_Cart_Counter.totalPrice');
 
   @override
@@ -70,7 +77,7 @@ mixin _$Cart_Counter on _Cart_Counter, Store {
   }
 
   final _$_Cart_CounterActionController =
-      ActionController(name: '_Cart_Counter');
+  ActionController(name: '_Cart_Counter');
 
   @override
   void getTotalPrice() {
@@ -125,6 +132,17 @@ mixin _$Cart_Counter on _Cart_Counter, Store {
   }
 
   @override
+  ObservableList<Product_Item> getCart() {
+    final _$actionInfo = _$_Cart_CounterActionController.startAction(
+        name: '_Cart_Counter.getCart');
+    try {
+      return super.getCart();
+    } finally {
+      _$_Cart_CounterActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void removeCartItemToBusket(String itemId) {
     final _$actionInfo = _$_Cart_CounterActionController.startAction(
         name: '_Cart_Counter.removeCartItemToBusket');
@@ -152,7 +170,8 @@ mixin _$Cart_Counter on _Cart_Counter, Store {
 totalPrice: ${totalPrice},
 itemCounter: ${itemCounter},
 list: ${list},
-cartList: ${cartList}
+cartList: ${cartList},
+getTotal: ${getTotal}
     ''';
   }
 }

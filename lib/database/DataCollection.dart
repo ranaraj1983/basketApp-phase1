@@ -15,6 +15,7 @@ import 'package:mobx/mobx.dart';
 
 class DataCollection {
   final firestoreInstance = Firestore.instance;
+  //Firestore.instance.se
 
   Future getCategoryList() async {
     QuerySnapshot qs =
@@ -27,9 +28,12 @@ class DataCollection {
     getListOfProductItem();
   }
 
-  Future getNewlyAddedProduct() {
-    //TODO need need implement
-    getListOfProductItem();
+  Future getNewlyAddedProduct() async {
+    QuerySnapshot qs = await firestoreInstance
+        .collection("categories")
+        .orderBy("orderDate", descending: true)
+        .getDocuments();
+    return qs.documents;
   }
 
   addCustomItem(String itemName, String quantity, String unit) async {
@@ -109,6 +113,7 @@ class DataCollection {
 
     QuerySnapshot qs = await firestoreInstance
         .collection("User/${userId}/orders")
+        .orderBy("orderDate", descending: true)
         .getDocuments();
 
     return qs;
@@ -186,6 +191,7 @@ class DataCollection {
         .collection("categories")
         .document(documentId)
         .collection("item")
+    //.where("itemName", searchKey)
         .getDocuments();
 
 

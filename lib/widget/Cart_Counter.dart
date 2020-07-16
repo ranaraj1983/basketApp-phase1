@@ -23,8 +23,11 @@ abstract class _Cart_Counter with Store {
   @action
   void getTotalPrice() {
     cartList.forEach((element) {
-      totalPrice.value += int.parse(element.price);
+      print(element.quantity);
+      totalPrice.value +=
+          (int.parse(element.price) * int.parse(element.quantity));
     });
+    //return totalPrice.value;
   }
 
   @action
@@ -57,19 +60,29 @@ abstract class _Cart_Counter with Store {
         null,
         null,
         itemUniqueId);
-    totalPrice.value += int.parse(price);
+    //totalPrice.value += int.parse(price);
+    totalPrice.value += (int.parse(price) * int.parse(quantity));
     cartList.add(cart);
     //list.value
   }
 
+
   @action
-  void removeCartItemToBusket(String itemId) {
+  ObservableList<Product_Item> getCart() {
+    print("inside computed" + totalPrice.value.toString());
+    return cartList;
+  }
+
+  @action
+  void removeCartItemToBusket(String itemName) {
     cartList.removeWhere(
-            (element) => element.itemUniqueId == itemId
+            (element) => element.itemName == itemName
     );
     totalPrice.value = 0;
     cartList.forEach((element) {
-      totalPrice.value += int.parse(element.price);
+      //totalPrice.value += int.parse(element.price);
+      totalPrice.value +=
+      (int.parse(element.price) * int.parse(element.quantity));
     });
     //list.value
   }
@@ -77,6 +90,13 @@ abstract class _Cart_Counter with Store {
   @action
   void clearBusketCart() {
     cartList.clear();
+    totalPrice.value = 0;
+  }
+
+  @computed
+  int get getTotal {
+    print("inside computed" + totalPrice.value.toString());
+    return totalPrice.value;
   }
 
   static final greeting = Observable('Hello World');

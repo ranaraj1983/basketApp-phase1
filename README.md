@@ -2,7 +2,7 @@
 
 A new Flutter application.
 
-command
+command to run .g file
 
 flutter pub run build_runner build
 
@@ -21,6 +21,7 @@ service firebase.storage {
 }
 
 keytool -genkey -v -keystore ~/key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias key
+fuller clean
 flutter build appbundle
 flutter build apk --split-per-abi
 
@@ -28,6 +29,12 @@ flutter build apk --split-per-abi
 
 Known Issue:-
 1)CartSession or refresh null
+
+
+
+
+
+keytool -exportcert -alias key -keystore /Users/dasinfosolutions/key.jks | openssl sha1 -binary | openssl base64
 
 
 

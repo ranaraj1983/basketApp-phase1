@@ -165,7 +165,6 @@ class _OrderHistory_Screen extends State<OderHistory_Screen> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        print("clicked");
                         _getAlertDialog(
                             context, snapshot.data.documents[index].documentID);
                       },

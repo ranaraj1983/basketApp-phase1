@@ -54,12 +54,8 @@ class item_details extends State<Item_Details> {
     void add() {
       setState(() {
         quantity++;
-        print(quantity);
       });
-      print(quantity);
     }
-
-    print(quantity);
 
     // TODO: implement build
     final ThemeData theme = Theme.of(context);

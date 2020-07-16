@@ -1,13 +1,10 @@
 import 'package:basketapp/Account_screen.dart';
-import 'package:basketapp/CustomOrder_Screen.dart';
 import 'package:basketapp/HomeScreen.dart';
 import 'package:basketapp/checkout_screen.dart';
 import 'package:basketapp/database/Auth.dart';
 import 'package:basketapp/database/DataCollection.dart';
 import 'package:basketapp/widget/WidgetFactory.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flappy_search_bar/flappy_search_bar.dart';
-import 'package:flappy_search_bar/search_bar_style.dart';
 import 'package:flutter/material.dart';
 import 'package:basketapp/widget/Cart_Counter.dart';
 import 'package:basketapp/model/Product_Item.dart';
@@ -19,6 +16,7 @@ import 'package:badges/badges.dart';
 final cartCounter = Cart_Counter();
 
 class Custom_AppBar {
+  int selectedPosition = 0;
 
   void addValueToState() {
     cartCounter.increment();
@@ -37,105 +35,47 @@ class Custom_AppBar {
     return cartCounter.cartList;
   }
 
-  Widget getCartListWidgetListView() {
-    return Container(
-        child: ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            //shrinkWrap: true,
-            itemCount: cartCounter.cartList.length,
-            itemBuilder: (BuildContext context, int index) {
-              int quan = int.parse(cartCounter.cartList[index].quantity);
-              int price = int.parse(cartCounter.cartList[index].price);
-              int total = quan * price;
-
-              return Column(
-                //crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Card(
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.only(
-                          left: 10, bottom: 10, right: 10, top: 10),
-                      margin: new EdgeInsets.only(
-                          left: 20.0, right: 20.0, top: 8.0, bottom: 5.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                              child: Image.network(
-                            cartCounter.cartList[index].imageUrl,
-                            fit: BoxFit.fitWidth,
-                            width: 100,
-                            height: 100,
-                          )),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Wrap(
-                                  children: [
-                                    Text(cartCounter.cartList[index].itemName,
-                                        style: TextStyle(
-                                            fontSize: 16.0,
-                                            color: Colors.black87,
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(cartCounter.cartList[index].quantity,
-                                        style: TextStyle(
-                                            fontSize: 16.0,
-                                            color: Colors.black87,
-                                            fontWeight: FontWeight.bold)),
-                                    Text("X"),
-                                    Text(cartCounter.cartList[index].price,
-                                        style: TextStyle(
-                                            fontSize: 16.0,
-                                            color: Colors.black87,
-                                            fontWeight: FontWeight.bold)),
-                                    Text(" = " + price.toString() + ""),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      tooltip: "Delete Item",
-                                      icon: Icon(Icons.delete_forever,
-                                          color: Colors.red, size: 35),
-                                      onPressed: () => {
-                                        print(
-                                            cartCounter.cartList[index].itemId),
-                                        Custom_AppBar().removeItemFromCart(
-                                            cartCounter
-                                                .cartList[index].itemUniqueId),
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-
-                // Divider(height: 15.0),
-              );
-            }));
+  Widget getCartListWidgetListView(BuildContext context) {
+    print(cartCounter.cartList.length);
+    return (
+        cartCounter.cartList.length > 0 ?
+        WidgetFactory().populateCartList(context) :
+        WidgetFactory().emptyWidget()
+    );
   }
 
   void addItemToCart(String itemId, String itemName, String imageUrl,
       String description, String quantity, String price, String itemUniqueId) {
+    ObservableList<Product_Item> list = cartCounter.getCart();
+    var prod = list.singleWhere((item) => item.itemName == itemName,
+        orElse: () => null);
+    prod == null ? _add(
+        itemId,
+        itemName,
+        imageUrl,
+        description,
+        quantity,
+        price,
+        itemUniqueId) : _addToExistingObject(
+        prod,
+        itemId,
+        itemName,
+        imageUrl,
+        description,
+        quantity,
+        price,
+        itemUniqueId
+    );
+  }
+
+  void _addToExistingObject(prod, String itemId, String itemName,
+      String imageUrl,
+      String description, String quantity, String price, String itemUniqueId) {
+    //ObservableList<Product_Item> list = cartCounter.getCart();
+    //var prod = list.singleWhere((item) => item.itemName == itemName, orElse: () => null);
+    cartCounter.removeCartItemToBusket(itemName);
+    print(quantity + " :: " + prod.quantity);
+    quantity = (int.parse(quantity) + int.parse(prod.quantity)).toString();
     cartCounter.addCartItemToBusket(
         itemId,
         itemName,
@@ -144,13 +84,29 @@ class Custom_AppBar {
         quantity,
         price,
         itemUniqueId);
+    //prod.quantity  = quantity;
+    print(quantity);
+
+    //cartCounter.cartList(prod);
+  }
+
+  void _add(String itemId, String itemName, String imageUrl,
+      String description, String quantity, String price, String itemUniqueId) {
+    cartCounter.addCartItemToBusket(
+        itemId,
+        itemName,
+        imageUrl,
+        description,
+        quantity,
+        price,
+        itemUniqueId
+    );
   }
 
   void removeItemFromCart(String itemId) {
+    //cartCounter.getTotal();
+    print(cartCounter.getTotal);
     cartCounter.removeCartItemToBusket(itemId);
-    /* cartCounter.cartList.removeWhere((element) =>
-    element.itemUniqueId == itemId);*/
-    //cartCounter.removeCartItemFromBusket();
   }
 
   Widget getAppBar(BuildContext context) {
@@ -201,7 +157,10 @@ class Custom_AppBar {
                 hintText: "Search",
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+                    borderRadius: BorderRadius.all(Radius.circular(25.0)
+                    )
+                )
+            ),
           ),
           /*IconButton(
             tooltip: 'Search',
@@ -272,7 +231,6 @@ class Custom_AppBar {
     cartCounter.clearBusketCart();
   }
 
-  int selectedPosition = 0;
 
   void _navigateToPage(int index, BuildContext context,
       FirebaseUser firebaseUser) {
@@ -282,7 +240,7 @@ class Custom_AppBar {
       )
       );
     } else if (index == 1) {
-      print("inside offer");
+      /*print("inside offer");
       var categoryList = DataCollection().getCategories();
       Navigator.push(context, MaterialPageRoute(
         builder: (context) => CustomOrder_Screen(),
@@ -292,7 +250,7 @@ class Custom_AppBar {
           //element.documentID;
           print(element.documentID);
         });
-      });
+      });*/
     } else if (index == 2) {
       firebaseUser == null ? WidgetFactory()
           .logInDialog(context) : Navigator.push(context, MaterialPageRoute(
@@ -379,8 +337,7 @@ class ItemSearchDelegate extends SearchDelegate<Product_Item> {
     return null;
   }
 
-  @override
-  Widget buildSuggestions(BuildContext context) {
+  Widget _doSearch(BuildContext context) {
     return Container(
       child: FutureBuilder(
         future: DataCollection().getCategoryList(),
@@ -389,6 +346,7 @@ class ItemSearchDelegate extends SearchDelegate<Product_Item> {
             return Text("Searching");
           } else {
             return ListView.builder(
+              shrinkWrap: true,
               itemCount: snapshot.data.length,
               itemBuilder: (_, index) {
                 return query.isEmpty ? Container() :
@@ -410,15 +368,12 @@ class ItemSearchDelegate extends SearchDelegate<Product_Item> {
                                   .toString()
                                   .toLowerCase()
                                   .contains(query.toLowerCase())
-                                  ? Text("")
+                                  ? Container()
                                   : Container(
                                 child: WidgetFactory().getSearchListView(
                                     context, snapshot.data[index],
                                     snp.data[ind]),
-                                /*title: Text(snp.data[ind].data['itemName'] + " :: " + snapshot.data[index].documentID),
-                                        onTap: (){
 
-                                        },*/
                               );
                             }
                         );
@@ -433,6 +388,12 @@ class ItemSearchDelegate extends SearchDelegate<Product_Item> {
         },
       ),
     );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    print(query);
+    return query.length > 3 ? _doSearch(context) : Text("Searching......");
   }
 
 

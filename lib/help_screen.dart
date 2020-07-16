@@ -125,14 +125,14 @@ class Help extends State<Help_Screen> {
                                       child: AlertDialog(
                                           title: const Text('Terms Use'),
                                           content: Text(
-                                              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                                              style: dialogTextStyle),
+                                              "https://gomudi.com/about",
+                                          style: dialogTextStyle),
                                           actions: <Widget>[
                                             FlatButton(
-                                                child: const Text('DISAGREE'),
+                                                child: const Text('AGREE'),
                                                 onPressed: () {
                                                   Navigator.pop(context,
-                                                     null);
+                                                      null);
                                                 }),
                                             /*  FlatButton(
                                             child: const Text('AGREE'),
@@ -170,11 +170,11 @@ class Help extends State<Help_Screen> {
                                         child: AlertDialog(
                                             title: const Text('About Us'),
                                             content: Text(
-                                                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                                                "https://gomudi.com/about",
                                                 style: dialogTextStyle),
                                             actions: <Widget>[
                                               FlatButton(
-                                                  child: const Text('DISAGREE'),
+                                                  child: const Text('AGREE'),
                                                   onPressed: () {
                                                     Navigator.pop(context,
                                                         null);
@@ -214,11 +214,11 @@ class Help extends State<Help_Screen> {
                                         child: AlertDialog(
                                             title: const Text('Send Feedback'),
                                             content: Text(
-                                                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                                                "support@gomudi.com",
                                                 style: dialogTextStyle),
                                             actions: <Widget>[
                                               FlatButton(
-                                                  child: const Text('DISAGREE'),
+                                                  child: const Text('AGREE'),
                                                   onPressed: () {
                                                     Navigator.pop(context,
                                                         null);
@@ -263,7 +263,7 @@ class Help extends State<Help_Screen> {
   );
 
   Widget _status(status) {
-    if (status == 'Cabcel Order') {
+    if (status == 'Cancel Order') {
       return FlatButton.icon(
           label: Text(
             status,

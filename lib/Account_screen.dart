@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:basketapp/ForgetPassword_Screen.dart';
 import 'package:basketapp/database/DataCollection.dart';
 import 'package:basketapp/widget/Custom_AppBar.dart';
 import 'package:basketapp/widget/Navigation_Drwer.dart';
@@ -16,7 +17,7 @@ class Account_Screen extends StatefulWidget {
   final Auth auth;
 
   @override
-  State<StatefulWidget> createState() => account();
+  State<StatefulWidget> createState() => Account();
 }
 
 enum AuthStatus {
@@ -24,7 +25,7 @@ enum AuthStatus {
   SignIn,
 }
 
-class account extends State<Account_Screen> {
+class Account extends State<Account_Screen> {
   FirebaseUser firebaseUser;
   AuthStatus authStatus = AuthStatus.noSignIn;
   File _image;
@@ -200,7 +201,7 @@ class account extends State<Account_Screen> {
           ),
           new Container(
             margin:
-            EdgeInsets.only(left: 12.0, top: 5.0, right: 0.0, bottom: 5.0),
+                EdgeInsets.only(left: 12.0, top: 5.0, right: 0.0, bottom: 5.0),
             child: new Text(
               'Addresses',
               style: TextStyle(
@@ -209,63 +210,75 @@ class account extends State<Account_Screen> {
                   fontSize: 18.0),
             ),
           ),
-                  WidgetFactory().getCustomerAddress(context, formKey),
-                  new Container(
+          WidgetFactory().getCustomerAddress(context, formKey),
+          new Container(
+            margin: EdgeInsets.all(7.0),
+            child: Card(
+              elevation: 1.0,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ForgetPassword_Screen()));
+                },
+                child: Row(
+                  children: <Widget>[
+                    IconButton(
+                        icon: keyloch,
+                        onPressed: () {
+                          Auth().resetPassword("1234567");
+                        }),
+                    _verticalD(),
+                    new Text(
+                      'Change Password',
+                      style: TextStyle(fontSize: 15.0, color: Colors.black87),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+          /*new Container(
                     margin: EdgeInsets.all(7.0),
                     child: Card(
                       elevation: 1.0,
                       child: Row(
                         children: <Widget>[
-                          new IconButton(icon: keyloch, onPressed: null),
+                          new IconButton(icon: clear, onPressed: null),
                           _verticalD(),
                           new Text(
-                            'Change Password',
-                    style: TextStyle(fontSize: 15.0, color: Colors.black87),
-                  )
-                ],
-              ),
-            ),
-          ),
-          new Container(
-            margin: EdgeInsets.all(7.0),
-            child: Card(
-              elevation: 1.0,
-              child: Row(
-                children: <Widget>[
-                  new IconButton(icon: clear, onPressed: null),
-                  _verticalD(),
-                  new Text(
-                    'Clear History',
-                    style: TextStyle(
-                      fontSize: 15.0,
-                      color: Colors.black87,
+                            'Clear History',
+                            style: TextStyle(
+                              fontSize: 15.0,
+                              color: Colors.black87,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  )
-                ],
-              ),
-            ),
-          ),
-          new Container(
-            margin: EdgeInsets.all(7.0),
-            child: Card(
-              elevation: 1.0,
-              child: Row(
-                children: <Widget>[
-                  new IconButton(icon: logout, onPressed: null),
-                  _verticalD(),
-                  new Text(
-                    'Deactivate Account',
-                    style: TextStyle(
-                      fontSize: 15.0,
-                      color: Colors.redAccent,
+                  ),*/
+          /*new Container(
+                    margin: EdgeInsets.all(7.0),
+                    child: Card(
+                      elevation: 1.0,
+                      child: Row(
+                        children: <Widget>[
+                          new IconButton(icon: logout, onPressed: null),
+                          _verticalD(),
+                          new Text(
+                            'Deactivate Account',
+                            style: TextStyle(
+                              fontSize: 15.0,
+                              color: Colors.redAccent,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  )
-                ],
-              ),
-            ),
-          )
-                ],
-              ))),
+                  )*/
+        ],
+      ))),
     );
   }
 

@@ -1,11 +1,14 @@
 import 'dart:math';
 
 import 'package:basketapp/HomeScreen.dart';
+import 'package:basketapp/Payment_Screen.dart';
 import 'package:basketapp/database/Auth.dart';
 import 'package:basketapp/database/DataCollection.dart';
+import 'package:basketapp/item_details.dart';
 import 'package:basketapp/widget/Custom_AppBar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class WidgetFactory {
@@ -20,54 +23,49 @@ class WidgetFactory {
     });
   }
 
-  Widget getSearchListView(BuildContext context, var categorySnapshot, var itemSnapshot) {
+  Widget getSearchListView(
+      BuildContext context, var categorySnapshot, var itemSnapshot) {
     return ListView(
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
       children: <Widget>[
         SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Expanded(
-                    child: _populateSearList(
-                        context, categorySnapshot, itemSnapshot),
-                  ),
-                  Expanded(
-                    child: getImageFromDatabase(
-                        context, itemSnapshot.data['imageUrl']),
-                  ),
-                  Expanded(
-                    child: addToCartButton(itemSnapshot),
+          child: Card(
+            color: Colors.indigo,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Item_Details(
+                              toolbarname: itemSnapshot.data['itemName'],
+                              dataSource: itemSnapshot,
+                            )));
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Expanded(
+                        child: _populateSearchList(
+                            context, categorySnapshot, itemSnapshot),
+                      ),
+                      Expanded(
+                        child: getImageFromDatabase(
+                            context, itemSnapshot.data['imageUrl']),
+                      ),
+                      Expanded(
+                        child: addToCartButton(itemSnapshot),
+                      ),
+                    ],
                   ),
                 ],
               ),
-
-              /*Container(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 0.0),
-                        child: _populateSearList(
-                            context, categorySnapshot, itemSnapshot),
-                      ),
-                    ),
-                    //getImageFromDatabase(context,itemSnapshot.data['imageUrl']),
-                    Container(
-                      //width: 250,
-                      //height: 200,
-                      child: getImageFromDatabase(
-                          context, itemSnapshot.data['imageUrl']),
-                    ),
-                    Container(
-                      //width: 250,
-                      //height: 200,
-                      child: addToCartButton(itemSnapshot),
-                    ),*/
-            ],
+            ),
           ),
         ),
       ],
@@ -159,7 +157,6 @@ class WidgetFactory {
                                 : null,
                             onSaved: (val) => formKey.currentState
                                 .setState(() => _email = val),
-
                           ),
                           TextFormField(
                             obscureText: true,
@@ -194,26 +191,21 @@ class WidgetFactory {
                 ],
               ),
             ),
-
-
           );
         });
 
     //showDialog(context: context, builder: (_) => alert);
   }
 
-
   Widget getImageFromDatabase(BuildContext context, String imageUrl) {
     return FutureBuilder(
-        future: DataCollection().getImageFromStorage(
-            context, imageUrl, 100, 100),
+        future:
+        DataCollection().getImageFromStorage(context, imageUrl, 100, 100),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return ClipRRect(
-
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
               child: Stack(
-
                 children: <Widget>[
                   snapshot.data == null
                       ? Image.network(
@@ -231,7 +223,175 @@ class WidgetFactory {
         });
   }
 
-  Widget _populateSearList(BuildContext context, var categorySnapshot, var itemSnapshot) {
+  Widget emptyWidget() {
+    return Container(
+      child: Text("No Item Added"),
+    );
+  }
+
+  Widget populateCartList(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              //shrinkWrap: true,
+              itemCount: cartCounter.cartList.length,
+              itemBuilder: (BuildContext context, int index) {
+                int quan = int.parse(cartCounter.cartList[index].quantity);
+                int price = int.parse(cartCounter.cartList[index].price);
+                int total = quan * price;
+
+                return Column(
+                  //crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Card(
+                      child: Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.only(
+                            left: 10, bottom: 10, right: 10, top: 10),
+                        margin: new EdgeInsets.only(
+                            left: 20.0, right: 20.0, top: 8.0, bottom: 5.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: Image.network(
+                                  cartCounter.cartList[index].imageUrl,
+                                  fit: BoxFit.fitWidth,
+                                  width: 100,
+                                  height: 100,
+                                )),
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Wrap(
+                                    children: [
+                                      Text(cartCounter.cartList[index].itemName,
+                                          style: TextStyle(
+                                              fontSize: 16.0,
+                                              color: Colors.black87,
+                                              fontWeight: FontWeight.bold)),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(cartCounter.cartList[index].quantity,
+                                          style: TextStyle(
+                                              fontSize: 16.0,
+                                              color: Colors.black87,
+                                              fontWeight: FontWeight.bold)),
+                                      Text("X"),
+                                      Text(cartCounter.cartList[index].price,
+                                          style: TextStyle(
+                                              fontSize: 16.0,
+                                              color: Colors.black87,
+                                              fontWeight: FontWeight.bold)),
+                                      Text(" = " + total.toString() + ""),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        tooltip: "Delete Item",
+                                        icon: Icon(Icons.delete_forever,
+                                            color: Colors.red, size: 35),
+                                        onPressed: () =>
+                                        {
+                                          print(cartCounter
+                                              .cartList[index].itemId),
+                                          Custom_AppBar().removeItemFromCart(
+                                              cartCounter
+                                                  .cartList[index].itemName),
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+
+                  // Divider(height: 15.0),
+                );
+              }),
+        ),
+        cartCounter.cartList.length > 0
+            ? _addConfirmButtom(context)
+            : Container(),
+      ],
+    );
+  }
+
+  Widget _addConfirmButtom(BuildContext context) {
+    return Container(
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          IconButton(icon: Icon(Icons.info), onPressed: null),
+          Text(
+            'Total :',
+            style: TextStyle(
+                fontSize: 17.0,
+                color: Colors.black,
+                fontWeight: FontWeight.bold),
+          ),
+
+          Observer(
+            builder: (_) =>
+                Stack(
+                  children: <Widget>[
+                    Text(
+                      '\₹ ${cartCounter.totalPrice.value}',
+                      style: TextStyle(fontSize: 17.0, color: Colors.black54),
+                    ),
+                  ],
+                ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              alignment: Alignment.center,
+              child: OutlineButton(
+                  borderSide: BorderSide(color: Colors.amber.shade500),
+                  child: const Text('CONFIRM ORDER'),
+                  textColor: Colors.amber.shade500,
+                  onPressed: () async {
+                    if (await Auth().getCurrentUserFuture() != null) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  Payment_Screen(cartCounter.getTotal)));
+                    } else {
+                      WidgetFactory().logInDialog(context);
+                    }
+                  },
+                  shape: new OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  )),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _populateSearchList(BuildContext context, var categorySnapshot,
+      var itemSnapshot) {
     return Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
@@ -239,12 +399,12 @@ class WidgetFactory {
             children: [
               Text(
                 itemSnapshot.data['itemName'],
-                style: GoogleFonts.aBeeZee(
+                style: GoogleFonts.roboto(
                   //textStyle: Theme.of(context).textTheme.headline5,
                   fontSize: 20,
                   fontWeight: FontWeight.w400,
                   //fontStyle: FontStyle.normal,
-                  color: Colors.blueAccent,
+                  color: Colors.yellowAccent,
                 ),
                 textAlign: TextAlign.left,
               ),
@@ -254,9 +414,10 @@ class WidgetFactory {
             children: [
               Text(
                 "\₹" + itemSnapshot.data['price'],
-                style: GoogleFonts.aBeeZee(
+                style: GoogleFonts.roboto(
                   //textStyle: Theme.of(context).textTheme.headline5,
                   fontSize: 25,
+                  color: Colors.yellowAccent,
                   //fontWeight: FontWeight.w400,
                   //fontStyle: FontStyle.normal,
                 ),
@@ -264,10 +425,7 @@ class WidgetFactory {
               ),
             ],
           ),
-
-
-        ]
-    );
+        ]);
   }
 
   Widget addToCartButton(itemSnapshot) {
@@ -293,10 +451,8 @@ class WidgetFactory {
                   random.toString() + "_" + itemSnapshot.data['itemName']);
             },
             shape: new OutlineInputBorder(
-
               borderRadius: BorderRadius.circular(30.0),
-            )
-        ),
+            )),
       ),
     );
   }
@@ -350,72 +506,65 @@ class WidgetFactory {
                 key: formKey,
                 autovalidate: false,
                 child: SingleChildScrollView(
-                    child: Column(
-                        children: <Widget>[
-                          Text("${user.displayName}"),
-                          TextFormField(
-                            decoration: InputDecoration(
-                                labelText: 'Street Name'),
-                            // ignore: missing_return
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please enter Street Name';
-                              }
-                            },
-                            onSaved: (val) =>
-                                formKey.currentState.setState(() =>
-                                street = val),
-                          ),
-                          TextFormField(
-                            decoration: InputDecoration(labelText: 'City'),
-                            // ignore: missing_return
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please enter City Name';
-                              }
-                            },
-                            onSaved: (val) =>
-                                formKey.currentState.setState(() => city = val),
-                          ),
-                          TextFormField(
-                            decoration: InputDecoration(labelText: 'District'),
-                            // ignore: missing_return
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please enter district Name';
-                              }
-                            },
-                            onSaved: (val) =>
-                                formKey.currentState.setState(() =>
-                                district = val),
-                          ),
-                          TextFormField(
-                            decoration: InputDecoration(labelText: 'pincode'),
-                            // ignore: missing_return
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please enter pincode Name';
-                              }
-                            },
-                            onSaved: (val) =>
-                                formKey.currentState.setState(() =>
-                                pincode = val),
-                          ),
-
-                          TextFormField(
-                            decoration: InputDecoration(
-                                labelText: 'mobile number'),
-                            // ignore: missing_return
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please enter phone number';
-                              }
-                            },
-                            onSaved: (val) =>
-                                formKey.currentState.setState(() =>
-                                mobilenumber = val),
-                          ),
-                ]))),
+                    child: Column(children: <Widget>[
+                      Text("${user.displayName}"),
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'Street Name'),
+                        // ignore: missing_return
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter Street Name';
+                          }
+                        },
+                        onSaved: (val) =>
+                            formKey.currentState.setState(() => street = val),
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'City'),
+                        // ignore: missing_return
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter City Name';
+                          }
+                        },
+                        onSaved: (val) =>
+                            formKey.currentState.setState(() => city = val),
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'District'),
+                        // ignore: missing_return
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter district Name';
+                          }
+                        },
+                        onSaved: (val) =>
+                            formKey.currentState.setState(() => district = val),
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'pincode'),
+                        // ignore: missing_return
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter pincode Name';
+                          }
+                        },
+                        onSaved: (val) =>
+                            formKey.currentState.setState(() => pincode = val),
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'mobile number'),
+                        // ignore: missing_return
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter phone number';
+                          }
+                        },
+                        onSaved: (val) =>
+                            formKey.currentState.setState(() =>
+                            mobilenumber = val),
+                      ),
+                    ]))),
           );
         });
   }
@@ -438,11 +587,11 @@ class WidgetFactory {
                     new Container(
                         alignment: Alignment.center,
                         child: IconButton(
-                            icon: Icon(Icons.add), onPressed: () {
-                          WidgetFactory().addAddressDialog(context, formKey);
-                        }
-                        )
-                    ),
+                            icon: Icon(Icons.add),
+                            onPressed: () {
+                              WidgetFactory()
+                                  .addAddressDialog(context, formKey);
+                            })),
                   ],
                 ),
               ),
@@ -474,8 +623,8 @@ class WidgetFactory {
                                     right: 0.0,
                                     bottom: 5.0),
                                 child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(
                                         snapshot.data['displayName'],
@@ -536,24 +685,18 @@ class WidgetFactory {
                                         ),
                                       ),
                                       //_verticalDivider(),
-
-
-                                    ]
-                                ),
+                                    ]),
                               );
                             }
                           },
                         ),
-
                       ],
                     ),
                   ],
                 ),
               ),
             ),
-
           ],
-        )
-    );
+        ));
   }
 }

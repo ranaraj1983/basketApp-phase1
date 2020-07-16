@@ -108,59 +108,18 @@ class _CheckOut_Screen extends State<Checkout> {
             //height: height,
             width: width,
             child: Observer(
-              builder: (_) => Custom_AppBar().getCartListWidgetListView(),
-            ),
-          ),
-          Container(
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                IconButton(icon: Icon(Icons.info), onPressed: null),
-                Text(
-                  'Total :',
-                  style: TextStyle(
-                      fontSize: 17.0,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold),
-                ),
-                Observer(
-                  builder: (_) => Stack(
-                    children: <Widget>[
-                      Text(
-                        '\₹ ${cartCounter.totalPrice.value}',
-                        style: TextStyle(fontSize: 17.0, color: Colors.black54),
-                      ),
+              builder: (_) =>
+                  Stack(
+                    children: [
+                      Custom_AppBar().getCartListWidgetListView(context),
+
                     ],
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: OutlineButton(
-                        borderSide: BorderSide(color: Colors.amber.shade500),
-                        child: const Text('CONFIRM ORDER'),
-                        textColor: Colors.amber.shade500,
-                        onPressed: () async {
-                          if (await Auth().getCurrentUserFuture() != null) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        Payment_Screen(totalPrice)));
-                          } else {
-                            WidgetFactory().logInDialog(context);
-                          }
-                        },
-                        shape: new OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        )),
-                  ),
-                ),
-              ],
+
             ),
           ),
+
+
         ],
       ),
     );
