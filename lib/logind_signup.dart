@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'database/DataCollection.dart';
+import 'package:basketapp/ForgetPassword_Screen.dart';
 
 class Login_Screen extends StatefulWidget {
   final Key fieldKey;
@@ -493,11 +494,11 @@ class login extends State<Login_Screen> {
                       _verticalD(),
                       new GestureDetector(
                         onTap: () {
-                          Navigator.push(
+                          /*Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Signup_Screen()));
-                        },
+                                builder: (context) => Signup_Screen()));*/
+                      },
                         child: new Text(
                           'Register',
                           style: TextStyle(
@@ -575,18 +576,14 @@ class login extends State<Login_Screen> {
                                             alignment: Alignment.bottomLeft,
                                             margin: EdgeInsets.only(left: 10.0),
                                             child: new GestureDetector(
-                                              onTap: (){
-                                                  debugPrint("inside forgot password");
-                                                  showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext context){
-                                                        return AlertDialog(
-                                                          title: Text("test"),
-                                                          content: Text("test")
-                                                        );
-                                                      }
-                                                  );
-
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ForgetPassword_Screen()
+                                                    )
+                                                );
                                               },
                                               child: Text('FORGOT PASSWORD?',style: TextStyle(
                                                   color: Colors.blueAccent,fontSize: 13.0

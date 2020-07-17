@@ -409,10 +409,8 @@ class home extends State<Home_screen> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            Item_Screen(
-                                                snapshot.data[index]
-                                                    .documentID)));
+                                        builder: (context) => Item_Screen(
+                                            snapshot.data[index].documentID)));
                               },
                               child: Column(
                                 children: <Widget>[

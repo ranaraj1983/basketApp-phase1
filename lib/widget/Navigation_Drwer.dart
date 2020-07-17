@@ -32,20 +32,25 @@ class _Navigation_Drawer extends State<Navigation_Drawer> {
   File _image;
   final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
 
-  Position _currentPosition;
   String _currentAddress;
 
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation();
-    _getAddressFromLatLng();
+
     widget.auth.getCurrentUser().then((userId) {
-      setState(() {
+      setState(() async {
         authStatus = userId == null ? AuthStatus.noSignIn : AuthStatus.SignIn;
       });
     }).catchError((onError) {
-      debugPrint(onError);
+      debugPrint(onError.toString());
+    });
+
+    WidgetFactory().getAddressFromLatLng().then((place) {
+      setState(() {
+        _currentAddress =
+            "${place.name}, ${place.locality}, ${place.postalCode}";
+      });
     });
 
     widget.auth.getCurrentUser().then((user) {
@@ -217,36 +222,6 @@ class _Navigation_Drawer extends State<Navigation_Drawer> {
         return getSignInDrawer();
       case AuthStatus.noSignIn:
         return getLoggedOutDrawer();
-    }
-  }
-
-  _getCurrentLocation() {
-    geolocator
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
-        .then((Position position) {
-      setState(() {
-        _currentPosition = position;
-      });
-
-      _getAddressFromLatLng();
-    }).catchError((e) {
-      print(e);
-    });
-  }
-
-  _getAddressFromLatLng() async {
-    try {
-      List<Placemark> p = await geolocator.placemarkFromCoordinates(
-          _currentPosition.latitude, _currentPosition.longitude);
-
-      Placemark place = p[0];
-
-      setState(() {
-        _currentAddress =
-        "${place.name}, ${place.locality}, ${place.postalCode}";
-      });
-    } catch (e) {
-      print(e);
     }
   }
 

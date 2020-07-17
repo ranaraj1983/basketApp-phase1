@@ -74,12 +74,13 @@ class _MyHomePageState extends State<MyHomePage> {
       alignment: Alignment.center,
       decoration: new BoxDecoration(color: Colors.white),
       child: new Container(
-        color: Colors.black12,
+        color: Color(0xFF6CA8F1),
+        //color: Colors.black12,
         margin: new EdgeInsets.all(30.0),
         width: 250.0,
         height: 250.0,
         child: new Image.asset(
-          'images/logo.png',
+          'images/gomudilogo.png',
         ),
       ),
     );

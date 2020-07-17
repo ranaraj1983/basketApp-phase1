@@ -9,9 +9,12 @@ import 'package:basketapp/widget/Custom_AppBar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class WidgetFactory {
+  final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
+
   Widget getCategoryInHomePage(BuildContext context) {
     var categoryList = DataCollection().getCategories();
     categoryList.then((value) {
@@ -38,7 +41,8 @@ class WidgetFactory {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => Item_Details(
+                        builder: (context) =>
+                            Item_Details(
                               toolbarname: itemSnapshot.data['itemName'],
                               dataSource: itemSnapshot,
                             )));
@@ -152,11 +156,13 @@ class WidgetFactory {
                                 labelText: 'E-mail',
                                 labelStyle: TextStyle(color: Colors.black54)),
                             keyboardType: TextInputType.emailAddress,
-                            validator: (val) => !val.contains('@')
+                            validator: (val) =>
+                            !val.contains('@')
                                 ? 'Not a valid email.'
                                 : null,
-                            onSaved: (val) => formKey.currentState
-                                .setState(() => _email = val),
+                            onSaved: (val) =>
+                                formKey.currentState
+                                    .setState(() => _email = val),
                           ),
                           TextFormField(
                             obscureText: true,
@@ -370,14 +376,56 @@ class WidgetFactory {
                   child: const Text('CONFIRM ORDER'),
                   textColor: Colors.amber.shade500,
                   onPressed: () async {
-                    if (await Auth().getCurrentUserFuture() != null) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  Payment_Screen(cartCounter.getTotal)));
+                    if (cartCounter.getTotal >= 500) {
+                      if (await Auth().getCurrentUserFuture() != null) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    Payment_Screen(cartCounter.getTotal)
+                            )
+                        );
+                      } else {
+                        WidgetFactory().logInDialog(context);
+                      }
                     } else {
-                      WidgetFactory().logInDialog(context);
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Order Price Alert"),
+                              content: Text(
+                                  "Your order value is less than 500"
+                                      " rupees kindly add more product or 50 rupees "
+                                      "delivery charges will be added to your order"
+                                      " value"
+                              ),
+                              actions: [
+                                FlatButton(
+                                  child: Text("Cancel"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                FlatButton(
+                                  child: Text("OK"),
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                Payment_Screen(
+                                                    cartCounter.getTotal)
+                                        )
+                                    );
+                                  },
+                                )
+
+                              ]
+                              ,
+                            );
+                          }
+                      );
                     }
                   },
                   shape: new OutlineInputBorder(
@@ -569,8 +617,8 @@ class WidgetFactory {
         });
   }
 
-  Widget getCustomerAddress(
-      BuildContext context, GlobalKey<FormState> formKey) {
+  Widget getCustomerAddress(BuildContext context,
+      GlobalKey<FormState> formKey) {
     return Container(
         height: 165.0,
         child: ListView(
@@ -676,7 +724,7 @@ class WidgetFactory {
                                       ),
                                       //_verticalDivider(),
                                       Text(
-                                        snapshot.data['pincode'],
+                                        snapshot.data['pin'],
                                         style: TextStyle(
                                           color: Colors.black87,
                                           fontSize: 15.0,
@@ -698,5 +746,21 @@ class WidgetFactory {
             ),
           ],
         ));
+  }
+
+
+  Future<Placemark> getAddressFromLatLng() async {
+    Position _currentPosition = await geolocator
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+
+    try {
+      List<Placemark> p = await geolocator.placemarkFromCoordinates(
+          _currentPosition.latitude, _currentPosition.longitude);
+
+      Placemark place = p[0];
+      return place;
+    } catch (e) {
+      print(e);
+    }
   }
 }

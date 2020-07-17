@@ -171,7 +171,7 @@ class _Paymet_Screen extends State<Payment_Screen> {
           ),
           _verticalDivider(),
           new Container(
-              height: 264.0,
+              //height: 264.0,
               margin: EdgeInsets.all(10.0),
               child: Card(
                 child: Container(
@@ -247,76 +247,149 @@ class _Paymet_Screen extends State<Payment_Screen> {
                                       onChanged: handleRadioValueChanged),
                                 ],
                               )),
-                          Divider(),
-                        ],
-                      )),
+                      Divider(),
+                    ],
+                  )),
                 ),
               )),
           Container(
               alignment: Alignment.bottomLeft,
-              height: 50.0,
+              //height: 100.0,
               child: Card(
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    IconButton(icon: Icon(Icons.info), onPressed: null),
-                    Text(
-                      'Total :',
-                      style: TextStyle(
-                          fontSize: 17.0,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      '\₹ ${totalPrice}',
-                      style: TextStyle(fontSize: 17.0, color: Colors.black54),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: OutlineButton(
-                            borderSide: BorderSide(color: Colors.green),
-                            child: const Text('PROCEED TO Order'),
-                            textColor: Colors.green,
-                            onPressed: () {
-                              DataCollection().addCustomerCartToDatabase(
-                                  Custom_AppBar().getCartList(), totalPrice);
-                              new Timer(new Duration(seconds: 1), () {
-                                debugPrint("Print after 5 seconds");
-                                DataCollection().getOrderHistoryList();
-                              });
-                              new Timer(new Duration(seconds: 1), () {
-                                debugPrint("Print after 5 seconds");
-                                Custom_AppBar().clearCart();
-                              });
-
-                              //Order_Service().placeOrder();
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          OderHistory_Screen()));
-                            },
-                            shape: new OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            )),
-                      ),
-                    ),
-                  ],
-                ),
+                child: totalPrice >= 500
+                    ? _onlyTotalPrice()
+                    : _totalPriceWithCourierCharge(),
               )),
         ],
       ),
     );
   }
 
+  Widget _onlyTotalPrice() {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        IconButton(icon: Icon(Icons.info), onPressed: null),
+        Text(
+          'Total : ',
+          style: TextStyle(
+              fontSize: 17.0, color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          '\₹ ${totalPrice}',
+          style: TextStyle(fontSize: 17.0, color: Colors.black54),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            alignment: Alignment.topRight,
+            child: OutlineButton(
+                borderSide: BorderSide(color: Colors.green),
+                child: const Text('PROCEED TO Order'),
+                textColor: Colors.green,
+                onPressed: () {
+                  DataCollection().addCustomerCartToDatabase(
+                      Custom_AppBar().getCartList(), totalPrice, false);
+                  new Timer(new Duration(seconds: 1), () {
+                    debugPrint("Print after 5 seconds");
+                    DataCollection().getOrderHistoryList();
+                  });
+                  new Timer(new Duration(seconds: 1), () {
+                    debugPrint("Print after 5 seconds");
+                    Custom_AppBar().clearCart();
+                  });
+
+                  //Order_Service().placeOrder();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => OderHistory_Screen()));
+                },
+                shape: new OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                )),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _totalPriceWithCourierCharge() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      verticalDirection: VerticalDirection.down,
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Row(
+          children: [
+            IconButton(icon: Icon(Icons.info), onPressed: null),
+            Text(
+              'Total :',
+              style: TextStyle(
+                  fontSize: 17.0,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold),
+            ),
+            Text(
+              '\₹ ${totalPrice}',
+              style: TextStyle(fontSize: 17.0, color: Colors.black54),
+            ),
+            Text(
+              ' + ',
+              style: TextStyle(fontSize: 17.0, color: Colors.black54),
+            ),
+            Text(
+              '50 = ${totalPrice + 50}',
+              style: TextStyle(fontSize: 17.0, color: Colors.black54),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                alignment: Alignment.center,
+                child: OutlineButton(
+                    borderSide: BorderSide(color: Colors.green),
+                    child: const Text('PROCEED TO Order'),
+                    textColor: Colors.green,
+                    onPressed: () {
+                      DataCollection().addCustomerCartToDatabase(
+                          Custom_AppBar().getCartList(), totalPrice, true);
+                      new Timer(new Duration(seconds: 1), () {
+                        debugPrint("Print after 5 seconds");
+                        DataCollection().getOrderHistoryList();
+                      });
+                      new Timer(new Duration(seconds: 1), () {
+                        debugPrint("Print after 5 seconds");
+                        Custom_AppBar().clearCart();
+                      });
+
+                      //Order_Service().placeOrder();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => OderHistory_Screen()));
+                    },
+                    shape: new OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    )),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
   _verticalDivider() => Container(
-    padding: EdgeInsets.all(2.0),
-  );
+        padding: EdgeInsets.all(2.0),
+      );
 
   _verticalD() => Container(
-    margin: EdgeInsets.only(left: 5.0),
-  );
+        margin: EdgeInsets.only(left: 5.0),
+      );
 }

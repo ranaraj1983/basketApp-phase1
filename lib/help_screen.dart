@@ -123,18 +123,16 @@ class Help extends State<Help_Screen> {
                                   showDemoDialog(
                                       context: context,
                                       child: AlertDialog(
-                                          title: const Text('Terms Use'),
-                                          content: Text(
-                                              "https://gomudi.com/about",
+                                          title: const Text('Email'),
+                                      content: Text("support@gomudi.com",
                                           style: dialogTextStyle),
-                                          actions: <Widget>[
-                                            FlatButton(
-                                                child: const Text('AGREE'),
-                                                onPressed: () {
-                                                  Navigator.pop(context,
-                                                      null);
-                                                }),
-                                            /*  FlatButton(
+                                      actions: <Widget>[
+                                        FlatButton(
+                                            child: const Text('OK'),
+                                            onPressed: () {
+                                              Navigator.pop(context, null);
+                                            }),
+                                        /*  FlatButton(
                                             child: const Text('AGREE'),
                                             onPressed: () {
                                               Navigator.pop(context,
@@ -174,7 +172,7 @@ class Help extends State<Help_Screen> {
                                                 style: dialogTextStyle),
                                             actions: <Widget>[
                                               FlatButton(
-                                                  child: const Text('AGREE'),
+                                                  child: const Text('OK'),
                                                   onPressed: () {
                                                     Navigator.pop(context,
                                                         null);
@@ -214,11 +212,11 @@ class Help extends State<Help_Screen> {
                                         child: AlertDialog(
                                             title: const Text('Send Feedback'),
                                             content: Text(
-                                                "support@gomudi.com",
+                                                "support@gomudi.com or call 9831129714",
                                                 style: dialogTextStyle),
                                             actions: <Widget>[
                                               FlatButton(
-                                                  child: const Text('AGREE'),
+                                                  child: const Text('OK'),
                                                   onPressed: () {
                                                     Navigator.pop(context,
                                                         null);

@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'package:basketapp/widget/WidgetFactory.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:path/path.dart' as path;
 import 'package:basketapp/database/Auth.dart';
 import 'package:basketapp/model/Order.dart';
@@ -13,8 +15,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
+enum OderStatus { PLACED, CANCEL, DELIVERED, WISHLIST }
+enum PaymentStatus { COD, BANK, OFFER }
+
 class DataCollection {
   final firestoreInstance = Firestore.instance;
+
   //Firestore.instance.se
 
   Future getCategoryList() async {
@@ -121,9 +127,13 @@ class DataCollection {
   }
 
   void addCustomerCartToDatabase(ObservableList<Product_Item> cartList,
-      int totalAmount) async {
+      int totalAmount, bool courierChargeApplied) async {
     String userId = await Auth().getCurrentUserId();
     //List<Cart_List> listOfOrder = new List<Cart_List>();
+    int courierCharge = 0;
+    //int amount = totalAmount;
+    courierChargeApplied ? courierCharge = 50 : courierCharge = 0;
+    //courierChargeApplied ? totalAmount += 50 : totalAmount = totalAmount;
 
     Random random = new Random();
     int randomNumber = random.nextInt(100000);
@@ -144,7 +154,9 @@ class DataCollection {
         .document(masterOrderId)
         .setData({
       'orderId': masterOrderId,
-      'totalAmount': totalAmount,
+      'amount': totalAmount,
+      'totalAmount': totalAmount + courierCharge,
+      "courierCharge": courierCharge,
       'orderDate': new DateTime.now()
     });
 
@@ -156,15 +168,16 @@ class DataCollection {
           'itemName': element.itemName,
           'imageUrl': element.imageUrl,
           'description': element.description,
-              'quantity': element.quantity,
-              'price': element.price,
-              'orderId': orderId,
-              "timestamp": new DateTime.now(),
-              //"location":
-              "orderStatus": "PLACED",
-              "paymentOption": "COD",
-              "totoalAmount": "2000"
-            }));
+          'quantity': element.quantity,
+          'price': element.price,
+          'orderId': orderId,
+          "timestamp": new DateTime.now(),
+          //"location":
+          "orderStatus": "PLACED",
+          "paymentOption": "COD",
+
+          "totalAmount": totalAmount
+        }));
       } catch (error) {
         debugPrint(error.toString());
       }
@@ -341,12 +354,21 @@ class DataCollection {
 
   }
 
-  void createUserTable(String uid, String phone) {
-    firestoreInstance
+  void createUserTable(String uid, String phone, email, displayName) async {
+    Placemark place = await WidgetFactory().getAddressFromLatLng();
+    await firestoreInstance
         .collection("User").document(uid).setData(
         {
           'mobileNumber': phone,
-
+          "email": email,
+          "displayName": displayName,
+          "street": place.name,
+          "city": place.locality,
+          "pin": place.postalCode,
+          "district": place.subAdministrativeArea,
+          "state": place.administrativeArea,
+          "country": place.country
+          // "dis"
         }
     );
   }

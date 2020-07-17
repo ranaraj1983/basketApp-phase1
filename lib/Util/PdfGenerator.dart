@@ -54,7 +54,7 @@ class PdfGenerator {
     file.writeAsBytes(bytes);
     //Launch the file (used open_file package)
     OpenFile.open('$path/order_${orderId}.pdf');
-    print(path);
+    //print(path);
   }
 
   PdfLayoutResult drawHeader(PdfPage page, Size pageSize, PdfGrid grid,
@@ -130,6 +130,7 @@ class PdfGenerator {
             result.bounds.bottom + 10,
             quantityCellBounds.width,
             quantityCellBounds.height));
+
     page.graphics.drawString(getTotalAmount(grid).toString(),
         PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
         bounds: Rect.fromLTWH(
@@ -171,7 +172,7 @@ class PdfGenerator {
     //Set style
     headerRow.style.backgroundBrush = PdfSolidBrush(PdfColor(68, 114, 196));
     headerRow.style.textBrush = PdfBrushes.white;
-    headerRow.cells[0].value = 'Product Id';
+    headerRow.cells[0].value = '# number';
     headerRow.cells[0].stringFormat.alignment = PdfTextAlignment.center;
     headerRow.cells[1].value = 'Product Name';
     headerRow.cells[2].value = 'Price';
@@ -181,13 +182,22 @@ class PdfGenerator {
         .getSubCollectionOfOrder(itemData['orderId']);
 
 
+    int i = 0;
     itemList.documents.forEach((element) {
       double price = double.parse(element.data['price']);
       int quan = int.parse(element.data['quantity']);
-      addProducts(element.data['itemId'], element.data['itemName'], price, quan,
+      addProducts((++i).toString(), element.data['itemName'], price, quan,
           price * quan, grid);
       print(element.data['itemName']);
     });
+
+    itemData['courierCharge'] > 0 ? addProducts(
+        "# " + (++i).toString() + " Delivery charge",
+        itemData['courierCharge'].toString(), 50, 1,
+        50.0 * 1, grid)
+        : addProducts("# " + (++i).toString() + "Delivery charge",
+        itemData['courierCharge'].toString(), 0, 0,
+        0.0, grid);
 
 
     //Apply the table built-in style
@@ -213,10 +223,10 @@ class PdfGenerator {
   }
 
   //Create and row for the grid.
-  void addProducts(String productId, String productName, double price,
+  void addProducts(String serialNumber, String productName, double price,
       int quantity, double total, PdfGrid grid) {
     final PdfGridRow row = grid.rows.add();
-    row.cells[0].value = productId;
+    row.cells[0].value = serialNumber;
     row.cells[1].value = productName;
     row.cells[2].value = price.toString();
     row.cells[3].value = quantity.toString();
@@ -230,6 +240,7 @@ class PdfGenerator {
       final String value = grid.rows[i].cells[grid.columns.count - 1].value;
       total += double.parse(value);
     }
+    //total += courierCharge;
     return total;
   }
 

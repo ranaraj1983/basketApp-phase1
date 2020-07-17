@@ -200,21 +200,22 @@ class Auth implements BaseAuth {
     // user.updateProfile(userUpdateInfo);
   }
 
-  void updatePassword() {}
-
   Future<String> registerUser(String email, String password, String firstName,
       String lastName, String phone) async {
     FirebaseUser user = (await _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     )).user;
+
     UserUpdateInfo userUpdateInfo = new UserUpdateInfo();
     userUpdateInfo.displayName = firstName + " " + lastName;
+    //userUpdateInfo.
 
     await user.updateProfile(userUpdateInfo);
     await user.reload();
     user = await _firebaseAuth.currentUser();
-    DataCollection().createUserTable(user.uid, phone);
+    DataCollection().createUserTable(
+        user.uid, phone, email, (firstName + " " + lastName));
     print(user.displayName);
   }
 }

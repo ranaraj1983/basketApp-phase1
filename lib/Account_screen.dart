@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:basketapp/ForgetPassword_Screen.dart';
 import 'package:basketapp/database/DataCollection.dart';
 import 'package:basketapp/widget/Custom_AppBar.dart';
@@ -7,6 +6,7 @@ import 'package:basketapp/widget/Navigation_Drwer.dart';
 import 'package:basketapp/widget/WidgetFactory.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'database/Auth.dart';
@@ -30,12 +30,18 @@ class Account extends State<Account_Screen> {
   AuthStatus authStatus = AuthStatus.noSignIn;
   File _image;
   final formKey = GlobalKey<FormState>();
+  final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
+  Placemark place;
+  Position _currentPosition;
+  String _currentAddress;
 
   @override
   void initState() {
     super.initState();
     widget.auth.getCurrentUser().then((userId) {
       setState(() {
+        _getCurrentLocation();
+        _getAddressFromLatLng();
         authStatus = userId == null ? AuthStatus.noSignIn : AuthStatus.SignIn;
       });
     }).catchError((onError) {
@@ -145,14 +151,14 @@ class Account extends State<Account_Screen> {
                           ),
                         ),
                         _verticalDivider(),
-                        new Text(
+                        /* new Text(
                           "${firebaseUser.phoneNumber}",
                           style: TextStyle(
                               color: Colors.black45,
                               fontSize: 13.0,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.5),
-                        ),
+                        ),*/
                         _verticalDivider(),
                         new Text(
                           "${firebaseUser.email}",
@@ -345,5 +351,35 @@ class Account extends State<Account_Screen> {
     setState(() {
       _image = File(imagePath.path);
     });
+  }
+
+  _getCurrentLocation() {
+    geolocator
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+        .then((Position position) {
+      setState(() {
+        _currentPosition = position;
+      });
+
+      _getAddressFromLatLng();
+    }).catchError((e) {
+      print(e);
+    });
+  }
+
+  _getAddressFromLatLng() async {
+    try {
+      List<Placemark> p = await geolocator.placemarkFromCoordinates(
+          _currentPosition.latitude, _currentPosition.longitude);
+
+
+      setState(() {
+        place = p[0];
+        _currentAddress =
+        "${place.name}, ${place.locality}, ${place.postalCode}";
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 }
