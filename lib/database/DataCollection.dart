@@ -349,14 +349,30 @@ class DataCollection {
         SnackBar(content: Text('Profile Picture Uploaded')));*/
   }
 
-  void updateUserProfile(String userId) {
+  void updateUserProfile(String userId) {}
 
-
+  Future getUserDetails() async {
+    String userId = await Auth().getCurrentUserId();
+    DocumentSnapshot user =
+        await firestoreInstance.collection("User").document(userId).get();
+    return user.data;
   }
 
   void createUserTable(String uid, String phone, email, displayName) async {
     Placemark place = await WidgetFactory().getAddressFromLatLng();
-    await firestoreInstance
+    addAddress(
+        uid,
+        displayName,
+        place.name,
+        place.locality,
+        place.subAdministrativeArea,
+        phone,
+        place.administrativeArea,
+        place.postalCode,
+        email,
+        place.country);
+
+    /*await firestoreInstance
         .collection("User").document(uid).setData(
         {
           'mobileNumber': phone,
@@ -370,32 +386,31 @@ class DataCollection {
           "country": place.country
           // "dis"
         }
-    );
+    );*/
   }
 
-  Future getUserDetails() async {
-    String userId = await Auth().getCurrentUserId();
-    DocumentSnapshot user = await firestoreInstance
-        .collection("User")
-        .document(userId).get();
-    return user.data;
-  }
-
-  void addAddress(FirebaseUser user, String displayName, String street,
-      String city, String district, String mobilenumber, String state,
-      String pincode) {
-    firestoreInstance
-        .collection("User").document(user.uid).setData(
-        {
-          'mobileNumber': mobilenumber,
-          'displayName': displayName,
-          'street': street,
-          'city': city,
-          'district': district,
-          'state': state,
-          'pincode': pincode
-        }
-    );
+  void addAddress(
+      String userId,
+      String displayName,
+      String street,
+      String city,
+      String district,
+      String mobileNumber,
+      String state,
+      String pincode,
+      String email,
+      String country) async {
+    await firestoreInstance.collection("User").document(userId).setData({
+      'mobileNumber': mobileNumber,
+      'displayName': displayName,
+      "email": email,
+      'street': street,
+      'city': city,
+      'district': district,
+      'state': state,
+      "country": country,
+      'pin': pincode
+    });
   }
 
   void _updateProductImageUrl(String url, String categoryName,

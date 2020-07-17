@@ -416,9 +416,10 @@ class home extends State<Home_screen> {
                                 children: <Widget>[
                                   WidgetFactory().getImageFromDatabase(context,
                                       d[index].data['categoryImageUrl']),
-
-                                  Text(snapshot.data[index].documentID),
-
+                                  Expanded(
+                                    child:
+                                        Text(snapshot.data[index].documentID),
+                                  ),
                                 ],
                               ),
                             );

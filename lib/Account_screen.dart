@@ -40,8 +40,6 @@ class Account extends State<Account_Screen> {
     super.initState();
     widget.auth.getCurrentUser().then((userId) {
       setState(() {
-        _getCurrentLocation();
-        _getAddressFromLatLng();
         authStatus = userId == null ? AuthStatus.noSignIn : AuthStatus.SignIn;
       });
     }).catchError((onError) {
@@ -116,7 +114,9 @@ class Account extends State<Account_Screen> {
                         GestureDetector(
                             child: _image == null
                                 ? WidgetFactory().getImageFromDatabase(
-                                    context, firebaseUser.photoUrl)
+                                context,
+                                firebaseUser == null ? null : firebaseUser
+                                    .photoUrl)
                                 : Image.file(
                                     _image,
                                     width: 150,
@@ -128,7 +128,7 @@ class Account extends State<Account_Screen> {
                                   source: ImageSource.gallery);
                               setState(() {
                                 _image = File(imagePath.path);
-                                print("imagePath $_image");
+                                //print("imagePath $_image");
 
                                 DataCollection()
                                     .uploadImageToStorageAndProfileImge(
@@ -142,7 +142,7 @@ class Account extends State<Account_Screen> {
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
                         new Text(
-                          '${firebaseUser.displayName}',
+                          firebaseUser == null ? "" : firebaseUser.displayName,
                           style: TextStyle(
                             color: Colors.black87,
                             fontSize: 15.0,
@@ -196,6 +196,7 @@ class Account extends State<Account_Screen> {
                           icon: ofericon,
                           color: Colors.blueAccent,
                           onPressed: () {
+
                             _showEditPopUp();
                           }),
                     )
@@ -216,7 +217,9 @@ class Account extends State<Account_Screen> {
                   fontSize: 18.0),
             ),
           ),
+
           WidgetFactory().getCustomerAddress(context, formKey),
+
           new Container(
             margin: EdgeInsets.all(7.0),
             child: Card(
@@ -233,7 +236,12 @@ class Account extends State<Account_Screen> {
                     IconButton(
                         icon: keyloch,
                         onPressed: () {
-                          Auth().resetPassword("1234567");
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ForgetPassword_Screen()));
+                          //Auth().resetPassword("1234567");
                         }),
                     _verticalD(),
                     new Text(
@@ -332,7 +340,7 @@ class Account extends State<Account_Screen> {
                 //_categoryService.createCategory(categoryController.text);
               }
               //Fluttertoast.showToast(msg: 'category created');
-              Navigator.pop(context);
+              //Navigator.pop(context);
             },
             child: Text('ADD')),
         FlatButton(
@@ -353,33 +361,4 @@ class Account extends State<Account_Screen> {
     });
   }
 
-  _getCurrentLocation() {
-    geolocator
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
-        .then((Position position) {
-      setState(() {
-        _currentPosition = position;
-      });
-
-      _getAddressFromLatLng();
-    }).catchError((e) {
-      print(e);
-    });
-  }
-
-  _getAddressFromLatLng() async {
-    try {
-      List<Placemark> p = await geolocator.placemarkFromCoordinates(
-          _currentPosition.latitude, _currentPosition.longitude);
-
-
-      setState(() {
-        place = p[0];
-        _currentAddress =
-        "${place.name}, ${place.locality}, ${place.postalCode}";
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
 }

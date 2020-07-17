@@ -63,12 +63,11 @@ class _Navigation_Drawer extends State<Navigation_Drawer> {
   Widget _getUserProfile() {
     return UserAccountsDrawerHeader(
       //accountName: Text("Rana"),
-      accountEmail: Text("${firebaseUser.email}"),
+      accountEmail: Text(firebaseUser == null ? "" : firebaseUser.email),
       currentAccountPicture: CircleAvatar(
         backgroundColor: Colors.black,
-        child: WidgetFactory()
-            .getImageFromDatabase(context, firebaseUser.photoUrl),
-
+        child: WidgetFactory().getImageFromDatabase(
+            context, firebaseUser == null ? null : firebaseUser.photoUrl),
       ),
       otherAccountsPictures: [
         CircleAvatar(

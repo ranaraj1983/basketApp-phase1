@@ -101,7 +101,6 @@ flutter:
     - images/pineapple.jpg
     - images/tomato.jpg
     - images/gro_TEST.jpg
-    - images/goMudilogo.png
     - images/logo.png
     - images/masala4.jpeg
     - images/masala3.jpeg
@@ -111,6 +110,10 @@ flutter:
     - images/masala.jpg
     - images/google.jpg
     - images/facebook.jpg
+    - images/gomudilogo.png
+    - images/noitemimage.png
+    - images/no-image.png
+    - images/noprofileimage.png
 
 
 

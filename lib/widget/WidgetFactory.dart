@@ -204,29 +204,39 @@ class WidgetFactory {
   }
 
   Widget getImageFromDatabase(BuildContext context, String imageUrl) {
-    return FutureBuilder(
-        future:
-        DataCollection().getImageFromStorage(context, imageUrl, 100, 100),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              child: Stack(
-                children: <Widget>[
-                  snapshot.data == null
-                      ? Image.network(
-                      'https://www.fakenamegenerator.com/images/sil-female.png')
-                      : snapshot.data,
-                  //snapshot.data,
-                ],
-              ),
-            );
-          } else {
-            return Container(
-              child: CircularProgressIndicator(),
-            );
-          }
-        });
+    return (imageUrl == null
+        ? Container(
+            height: 100,
+            width: 100,
+            child: Image.asset("images/noprofileimage.png"))
+        : FutureBuilder(
+            future: DataCollection()
+                .getImageFromStorage(context, imageUrl, 100, 100),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  child: Stack(
+                    children: <Widget>[
+                      snapshot.data == null
+                          ? Container(
+                              height: 100,
+                              width: 100,
+                              child: Image.asset("images/noprofileimage.png"))
+
+                          /*Image.network(
+                          'https://www.fakenamegenerator.com/images/sil-female.png')*/
+                          : snapshot.data,
+                      //snapshot.data,
+                    ],
+                  ),
+                );
+              } else {
+                return Container(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            }));
   }
 
   Widget emptyWidget() {
@@ -537,16 +547,18 @@ class WidgetFactory {
                     form.save();
 
                     DataCollection().addAddress(
-                        user,
+                        user.uid,
                         user.displayName,
                         street,
                         city,
                         district,
                         mobilenumber,
                         state,
-                        pincode);
+                        pincode,
+                        user.email,
+                        "India");
                   }
-                  Navigator.of(context).pop();
+
                 },
               ),
             ],
@@ -623,6 +635,8 @@ class WidgetFactory {
         height: 165.0,
         child: ListView(
           scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          physics: ScrollPhysics(),
           children: <Widget>[
             Container(
               height: 165.0,
@@ -675,7 +689,9 @@ class WidgetFactory {
                                     CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(
-                                        snapshot.data['displayName'],
+                                        snapshot.data['displayName'] == null
+                                            ? ""
+                                            : snapshot.data['displayName'],
                                         style: TextStyle(
                                           color: Colors.black87,
                                           fontSize: 15.0,
@@ -684,27 +700,9 @@ class WidgetFactory {
                                         ),
                                       ),
                                       Text(
-                                        snapshot.data['mobileNumber'],
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 15.0,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 0.5,
-                                        ),
-                                      ),
-                                      //_verticalDivider(),
-                                      Text(
-                                        snapshot.data['street'],
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 15.0,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 0.5,
-                                        ),
-                                      ),
-                                      //_verticalDivider(),
-                                      Text(
-                                        snapshot.data['city'],
+                                        snapshot.data['mobileNumber'] == null
+                                            ? ""
+                                            : snapshot.data['mobileNumber'],
                                         style: TextStyle(
                                           color: Colors.black87,
                                           fontSize: 15.0,
@@ -714,7 +712,9 @@ class WidgetFactory {
                                       ),
                                       //_verticalDivider(),
                                       Text(
-                                        snapshot.data['district'],
+                                        snapshot.data['street'] == null
+                                            ? ""
+                                            : snapshot.data['street'],
                                         style: TextStyle(
                                           color: Colors.black87,
                                           fontSize: 15.0,
@@ -724,7 +724,33 @@ class WidgetFactory {
                                       ),
                                       //_verticalDivider(),
                                       Text(
-                                        snapshot.data['pin'],
+                                        snapshot.data['city'] == null
+                                            ? ""
+                                            : snapshot.data['city'],
+                                        style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 15.0,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                      //_verticalDivider(),
+                                      Text(
+                                        snapshot.data['district'] == null
+                                            ? ""
+                                            : snapshot.data['district'],
+                                        style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 15.0,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                      //_verticalDivider(),
+                                      Text(
+                                        snapshot.data['pin'] == null
+                                            ? ""
+                                            : snapshot.data['pin'],
                                         style: TextStyle(
                                           color: Colors.black87,
                                           fontSize: 15.0,

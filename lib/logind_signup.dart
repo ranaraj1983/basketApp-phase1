@@ -494,10 +494,10 @@ class login extends State<Login_Screen> {
                       _verticalD(),
                       new GestureDetector(
                         onTap: () {
-                          /*Navigator.push(
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Signup_Screen()));*/
+                                builder: (context) => Signup_Screen()));
                       },
                         child: new Text(
                           'Register',
@@ -577,13 +577,13 @@ class login extends State<Login_Screen> {
                                             margin: EdgeInsets.only(left: 10.0),
                                             child: new GestureDetector(
                                               onTap: () {
-                                                Navigator.push(
+                                                /*Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
                                                             ForgetPassword_Screen()
                                                     )
-                                                );
+                                                );*/
                                               },
                                               child: Text('FORGOT PASSWORD?',style: TextStyle(
                                                   color: Colors.blueAccent,fontSize: 13.0
