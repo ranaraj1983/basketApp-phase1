@@ -104,26 +104,84 @@ class DataCollection {
 
   Future getSubCollectionOfOrder(String masterOrderId) async {
     String userId = await Auth().getCurrentUserId();
+
     QuerySnapshot qs = await firestoreInstance
+        .collection("Order/${masterOrderId}/${masterOrderId}")
+        .getDocuments();
+
+/*    QuerySnapshot qs = await firestoreInstance
         .collection("User/${userId}/orders")
         .document(masterOrderId)
         .collection(masterOrderId)
-        .getDocuments();
+        .getDocuments();*/
     return qs;
   }
 
   Future getOrderHistoryList() async {
     String userId = await Auth().getCurrentUserId();
 
-    Order order;
-
     QuerySnapshot qs = await firestoreInstance
-        .collection("User/${userId}/orders")
+        .collection("Order")
         .orderBy("orderDate", descending: true)
         .getDocuments();
 
-    return qs;
+/*    QuerySnapshot qs = await firestoreInstance
+        .collection("User/${userId}/orders")
+        .orderBy("orderDate", descending: true)
+        .getDocuments();*/
 
+    return qs;
+  }
+
+  void addOrder(ObservableList<Product_Item> cartList, int totalAmount,
+      bool courierChargeApplied) async {
+    int courierCharge = 0;
+    //int amount = totalAmount;
+    courierChargeApplied ? courierCharge = 50 : courierCharge = 0;
+    Random random = new Random();
+    int randomNumber = random.nextInt(100000);
+
+    FirebaseUser user = await Auth().getCurrentUser();
+    String masterOrderId = "#GMDI" + randomNumber.toString();
+    Placemark place = await WidgetFactory().getAddressFromLatLng();
+    //await _getUserAddress(user.uid).;
+    //address.
+    CollectionReference masterOrderSnapshot = firestoreInstance
+        .collection("Order")
+        .document(masterOrderId)
+        .collection(masterOrderId);
+
+    firestoreInstance.collection("Order").document(masterOrderId).setData({
+      'orderId': masterOrderId,
+      'amount': totalAmount,
+      'totalAmount': totalAmount + courierCharge,
+      "courierCharge": courierCharge,
+      'orderDate': new DateTime.now(),
+      "userId": user.uid,
+      "orderStatus": "PLACED",
+      "paymentOption": "COD",
+      "customerName": user.displayName,
+      "mobileNumber": user.phoneNumber,
+      //"address" :
+    });
+
+    cartList.forEach((element) {
+      String orderId = "#GMDI" + new Random().toString();
+      try {
+        masterOrderSnapshot.document(element.itemName).setData(({
+              'itemId': element.itemId,
+              'itemName': element.itemName,
+              'imageUrl': element.imageUrl,
+              'description': element.description,
+              'quantity': element.quantity,
+              'price': element.price,
+              'orderId': orderId,
+              "totalAmount": totalAmount
+            }));
+      } catch (error) {
+        debugPrint(error.toString());
+      }
+    });
   }
 
   void addCustomerCartToDatabase(ObservableList<Product_Item> cartList,
@@ -257,6 +315,7 @@ class DataCollection {
       print(er);
     }
   }
+
 
   void addProductToDB(
       String itemName,
@@ -439,5 +498,9 @@ class DataCollection {
 
   void cancelCustomerOrder(itemData) async {
     String userId = await Auth().getCurrentUserId();
+  }
+
+  Future _getUserAddress(String uid) async {
+    return await firestoreInstance.collection("User").document(uid).get();
   }
 }

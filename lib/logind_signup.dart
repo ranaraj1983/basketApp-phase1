@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:basketapp/HomeScreen.dart';
 import 'package:basketapp/database/Auth.dart';
 import 'package:basketapp/model/User.dart';
@@ -35,6 +36,7 @@ class Login_Screen extends StatefulWidget {
       ),
     );
   }
+
   @override
   State<StatefulWidget> createState() => login();
 }
@@ -61,7 +63,6 @@ class login extends State<Login_Screen> {
     return null;
   }
 
-/*
   FirebaseUser firebaseUser;
 
   @override
@@ -111,7 +112,7 @@ class login extends State<Login_Screen> {
           alignment: Alignment.centerLeft,
           decoration: kBoxDecorationStyle,
           height: 60.0,
-          child: TextField(
+          child: TextFormField(
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(
               color: Colors.yellowAccent,
@@ -126,7 +127,12 @@ class login extends State<Login_Screen> {
               ),
               hintText: 'Enter your Email',
               hintStyle: kHintTextStyle,
+
             ),
+
+            validator: (val) =>
+            !val.contains('@') ? 'Not a valid email.' : null,
+            onSaved: (val) => _email = val,
           ),
         ),
       ],
@@ -142,31 +148,14 @@ class login extends State<Login_Screen> {
           style: kLabelStyle,
         ),
         SizedBox(height: 10.0),
-        TextFormField(
-          obscureText: true,
-          decoration: const InputDecoration(
-              border: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-              ),
-              focusedBorder:  UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-              ),
-              icon: Icon(Icons.lock,color: Colors.black38,),
-              hintText: 'Your password',
-              labelText: 'Password',
-              labelStyle: TextStyle(color: Colors.black54)
-          ),
 
-          validator: (val) =>
-          val.length < 6 ? 'Password too short.' : null,
-          onSaved: (val) => _password = val,
-        ),
         Container(
           alignment: Alignment.centerLeft,
           decoration: kBoxDecorationStyle,
           height: 60.0,
-          child: TextField(
+          child: TextFormField(
             obscureText: true,
+            keyboardType: TextInputType.visiblePassword,
             style: TextStyle(
               color: Colors.yellowAccent,
               fontFamily: 'OpenSans',
@@ -180,7 +169,9 @@ class login extends State<Login_Screen> {
               ),
               hintText: 'Enter your Password',
               hintStyle: kHintTextStyle,
+
             ),
+
             validator: (val) =>
             val.length < 6 ? 'Password too short.' : null,
             onSaved: (val) => _password = val,
@@ -231,19 +222,14 @@ class login extends State<Login_Screen> {
     );
   }
 
-  Widget _buildLoginBtn() {
+  Widget _buildLoginBtn(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: () async{
-          FirebaseUser user = await new Auth().signIn(email, password);
-
-          debugPrint("inside log in function _performLogin: " + user.uid);
-
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Home_screen()));
+        onPressed: () async {
+          _submit(context);
         },
         padding: EdgeInsets.all(15.0),
 
@@ -319,18 +305,32 @@ class login extends State<Login_Screen> {
         children: <Widget>[
           _buildSocialBtn(
                 () {
-                  Auth().signupWithFacebook(context);
-                  print('Login with Facebook');
-              } ,
+              Auth().signupWithFacebook(context);
+              print('Login with Facebook');
+            } ,
             AssetImage(
               'images/facebook.jpg',
             ),
           ),
           _buildSocialBtn(
-                () {
-                  Auth().signupWithGoogle(context);
-                  print('Login with Google');
-              } ,
+                () async {
+              FirebaseUser fUser = await Auth().signupWithGoogle();
+              fUser != null ? Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => Home_screen()
+              )
+              ) : AwesomeDialog(
+                  context: context,
+                  dialogType: DialogType.ERROR,
+                  animType: AnimType.RIGHSLIDE,
+                  headerAnimationLoop: false,
+                  title: 'Login Error',
+                  desc:
+                  "error.toString()",
+                  btnOkOnPress: () {},
+                  btnOkIcon: Icons.cancel,
+                  btnOkColor: Colors.red)
+                  .show();
+            },
             AssetImage(
               'images/google.jpg',
             ),
@@ -414,15 +414,24 @@ class login extends State<Login_Screen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 30.0),
-                      _buildEmailTF(),
-                      SizedBox(
-                        height: 30.0,
+                      Form(
+                        key: formKey,
+                        autovalidate: _autovalidate,
+                        child: Column(
+                          children: [
+                            SizedBox(height: 30.0),
+                            _buildEmailTF(),
+                            SizedBox(
+                              height: 30.0,
+                            ),
+                            _buildPasswordTF(),
+                            _buildForgotPasswordBtn(),
+                            _buildRememberMeCheckbox(),
+                            _buildLoginBtn(context),
+                          ],
+                        ),
                       ),
-                      _buildPasswordTF(),
-                      _buildForgotPasswordBtn(),
-                      _buildRememberMeCheckbox(),
-                      _buildLoginBtn(),
+
                       _buildSignInWithText(),
                       _buildSocialBtnRow(context),
                       _buildSignupBtn(),
@@ -435,9 +444,9 @@ class login extends State<Login_Screen> {
         ),
       ),
     );
-  }*/
+  }
 
-  ShapeBorder shape;
+  /* ShapeBorder shape;
 
   FirebaseUser firebaseUser;
 
@@ -477,10 +486,10 @@ class login extends State<Login_Screen> {
                         onTap: () {
 
 
-                          /*Navigator.push(
+                          */ /*Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => login_screen()));*/
+                                builder: (context) => login_screen()));*/ /*
 
                         },
                         child: new Text(
@@ -577,13 +586,13 @@ class login extends State<Login_Screen> {
                                             margin: EdgeInsets.only(left: 10.0),
                                             child: new GestureDetector(
                                               onTap: () {
-                                                /*Navigator.push(
+                                                */ /*Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
                                                             ForgetPassword_Screen()
                                                     )
-                                                );*/
+                                                );*/ /*
                                               },
                                               child: Text('FORGOT PASSWORD?',style: TextStyle(
                                                   color: Colors.blueAccent,fontSize: 13.0
@@ -600,9 +609,11 @@ class login extends State<Login_Screen> {
                                               },
                                               child: Text('LOGIN',style: TextStyle(
                                                   color: Colors.orange,fontSize: 20.0,fontWeight: FontWeight.bold
-                                              ),),
+                                              ),
+                                              ),
                                             ),
                                           ),
+                                          _buildSocialBtnRow(context),
                                         ],
                                       ),
                                     ),
@@ -618,9 +629,9 @@ class login extends State<Login_Screen> {
             ),
           )
         ));
-  }
+  }*/
 
-  void _submit() {
+  void _submit(BuildContext context) {
     final form = formKey.currentState;
 
     if (form.validate()) {
@@ -628,10 +639,10 @@ class login extends State<Login_Screen> {
 
       // Email & password matched our validation rules
       // and are saved to _email and _password fields.
-      performLogin(_email,_password);
+      performLogin(_email, _password, context);
     }
-    else{
-      showInSnackBar('Please fix the errors in red before submitting.');
+    else {
+      //showInSnackBar('Please fix the errors in red before submitting.');
 
     }
   }
@@ -641,9 +652,11 @@ class login extends State<Login_Screen> {
         content: Text(value)
     ));
   }
-    User x = new User();
-    void useValue(val){
-      User u = new User(
+
+  User x = new User();
+
+  void useValue(val){
+    User u = new User(
       uid: val.uid,
       email: val.email,
       displayName: val.displayName,
@@ -655,22 +668,35 @@ class login extends State<Login_Screen> {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => Home_screen()));
   }
-    void _getItem(){
-      new DataCollection().getDataFromDatabase();
-    }
-   void performLogin (email, password) async {
+
+  void performLogin(email, password, BuildContext context) async {
     //_getItem();
-    FirebaseUser user = await new Auth().signIn(email, password);
+    try {
+      await new Auth().signIn(email, password);
 
-    debugPrint("inside log in function _performLogin: " + user.uid);
+      //debugPrint("inside log in function _performLogin: " + user.uid);
 
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => Home_screen()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Home_screen()));
+    } catch (error) {
+      AwesomeDialog(
+          context: context,
+          dialogType: DialogType.ERROR,
+          animType: AnimType.RIGHSLIDE,
+          headerAnimationLoop: false,
+          title: 'Login Error',
+          desc:
+          error.toString(),
+          btnOkOnPress: () {},
+          btnOkIcon: Icons.cancel,
+          btnOkColor: Colors.red)
+        ..show();
+    }
   }
 
   _verticalD() => Container(
-        margin: EdgeInsets.only(left: 10.0, right: 0.0, top: 0.0, bottom: 0.0),
-      );
+    margin: EdgeInsets.only(left: 10.0, right: 0.0, top: 0.0, bottom: 0.0),
+  );
 
   void handleError(e) {
     debugPrint(e);

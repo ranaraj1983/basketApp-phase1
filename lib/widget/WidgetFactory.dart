@@ -203,6 +203,10 @@ class WidgetFactory {
     //showDialog(context: context, builder: (_) => alert);
   }
 
+  Widget getImageFromDatabaseByGoogle(String imageUrl) {
+    return Image.network(imageUrl);
+  }
+
   Widget getImageFromDatabase(BuildContext context, String imageUrl) {
     return (imageUrl == null
         ? Container(
@@ -236,7 +240,9 @@ class WidgetFactory {
                   child: CircularProgressIndicator(),
                 );
               }
-            }));
+            }
+    )
+    );
   }
 
   Widget emptyWidget() {
@@ -672,12 +678,22 @@ class WidgetFactory {
                         FutureBuilder(
                           future: DataCollection().getUserDetails(),
                           builder: (_, AsyncSnapshot snapshot) {
-                            if (snapshot.connectionState ==
+                            if (!snapshot.hasData) {
+                              return Center(
+                                child: Text("Kindly add Your address..."),
+                              );
+                            }
+                            else if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
                               return Center(
                                 child: Text("Loading...."),
                               );
-                            } else {
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                child: Text("Error"),
+                              );
+                            }
+                            else {
                               return Container(
                                 margin: EdgeInsets.only(
                                     left: 12.0,

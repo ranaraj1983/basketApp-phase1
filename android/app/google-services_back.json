@@ -15,14 +15,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "910878509521-jllhq4f1d61ub9b3mvqdplaufstv8quq.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "basketApp.android",
-            "certificate_hash": "4d9263152d307e364443da34eda8905f6764d2f6"
-          }
-        },
-        {
           "client_id": "910878509521-charrbvv5uv5d8mlq68oikb2i48vjm2k.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -45,28 +37,12 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:910878509521:android:943a454987c2446d94b8f0",
+        "mobilesdk_app_id": "1:910878509521:android:b2f94e3ab579b8eb94b8f0",
         "android_client_info": {
           "package_name": "com.shipco.basketapp"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "910878509521-3a6ku5cre825hcqab6354e9b67okhpoh.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.shipco.basketapp",
-            "certificate_hash": "da8f29ae60117ffd936c914d29f5624a84486651"
-          }
-        },
-        {
-          "client_id": "910878509521-o21tmq8h80gd0aarm5cr149ovk1up1ed.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.shipco.basketapp",
-            "certificate_hash": "4d9263152d307e364443da34eda8905f6764d2f6"
-          }
-        },
         {
           "client_id": "910878509521-charrbvv5uv5d8mlq68oikb2i48vjm2k.apps.googleusercontent.com",
           "client_type": 3

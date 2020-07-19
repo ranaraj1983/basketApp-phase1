@@ -289,7 +289,7 @@ class _Paymet_Screen extends State<Payment_Screen> {
                 child: const Text('PROCEED TO Order'),
                 textColor: Colors.green,
                 onPressed: () {
-                  DataCollection().addCustomerCartToDatabase(
+                  DataCollection().addOrder(
                       Custom_AppBar().getCartList(), totalPrice, false);
                   new Timer(new Duration(seconds: 1), () {
                     debugPrint("Print after 5 seconds");
@@ -357,7 +357,7 @@ class _Paymet_Screen extends State<Payment_Screen> {
                     child: const Text('PROCEED TO Order'),
                     textColor: Colors.green,
                     onPressed: () {
-                      DataCollection().addCustomerCartToDatabase(
+                      DataCollection().addOrder(
                           Custom_AppBar().getCartList(), totalPrice, true);
                       new Timer(new Duration(seconds: 1), () {
                         debugPrint("Print after 5 seconds");

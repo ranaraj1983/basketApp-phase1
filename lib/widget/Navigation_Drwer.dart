@@ -65,15 +65,15 @@ class _Navigation_Drawer extends State<Navigation_Drawer> {
       //accountName: Text("Rana"),
       accountEmail: Text(firebaseUser == null ? "" : firebaseUser.email),
       currentAccountPicture: CircleAvatar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.yellowAccent,
         child: WidgetFactory().getImageFromDatabase(
             context, firebaseUser == null ? null : firebaseUser.photoUrl),
       ),
       otherAccountsPictures: [
         CircleAvatar(
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.yellowAccent,
           backgroundImage: ExactAssetImage('images/logo.png'),
-          child: Text("K"),
+          child: Text(""),
         ),
       ],
     );

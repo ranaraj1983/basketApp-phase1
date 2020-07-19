@@ -30,37 +30,46 @@ abstract class BaseAuth {
 class Auth implements BaseAuth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  Future<FirebaseUser> signupWithGoogle(BuildContext context) async {
-    final GoogleSignIn _googleSignIn = GoogleSignIn();
-    final GoogleSignInAccount googleUser =
-        await _googleSignIn.signIn().catchError((onError) {
-      print(onError);
-    });
+  Future<FirebaseUser> signupWithGoogle() async {
+    final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
+    FirebaseUser user;
+
     try {
+      await _googleSignIn.signIn();
+      print(_googleSignIn.currentUser.displayName);
+      final GoogleSignInAccount googleUser = await _googleSignIn.currentUser;
+      //Future<GoogleSignInAccount> gu =  _googleSignIn.signIn();
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
+
       final AuthCredential credential = GoogleAuthProvider.getCredential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      final FirebaseUser user =
-          (await _firebaseAuth.signInWithCredential(credential)).user;
+
+      user = (await _firebaseAuth.signInWithCredential(credential)).user;
       print("signed in " + user.displayName);
-      return user;
-    } catch (e) {
-      print(e);
+    } catch (error) {
+      print(error);
     }
+
+    return user;
   }
 
   Future<FirebaseUser> signupWithFacebook(BuildContext context) async {
     final FacebookLogin facebookSignIn = new FacebookLogin();
+    try {
+
+    } catch (error) {
+      print(error);
+    }
     await facebookSignIn
         .logIn(['email', 'public_profile']).then((result) async {
       switch (result.status) {
         case FacebookLoginStatus.loggedIn:
           await _firebaseAuth
               .signInWithCredential(FacebookAuthProvider.getCredential(
-                  accessToken: result.accessToken.token))
+              accessToken: result.accessToken.token))
               .then((user) {
             Navigator.of(context).pushReplacementNamed("/home");
             print("facebook signedin user :: ${user.toString()}");
@@ -160,6 +169,7 @@ class Auth implements BaseAuth {
 
   Future<bool> isEmailVerified() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
+
     return user.isEmailVerified;
   }
 
@@ -199,6 +209,7 @@ class Auth implements BaseAuth {
     user = await _firebaseAuth.currentUser();
     // user.updateProfile(userUpdateInfo);
   }
+
 
   Future<String> registerUser(String email, String password, String firstName,
       String lastName, String phone) async {

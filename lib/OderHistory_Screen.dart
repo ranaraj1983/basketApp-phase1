@@ -194,14 +194,14 @@ class _OrderHistory_Screen extends State<OderHistory_Screen> {
                                     },
                                     child: Text("Invoice"),
                                   ),
-                                  RaisedButton(
+                                  /*RaisedButton(
                                     onPressed: () {
                                       _cancelOrder(
                                           context, itemData);
                                       print("clicked");
                                     },
                                     child: Text("Cancel"),
-                                  ),
+                                  ),*/
                                 ],
                               ),
                             ),

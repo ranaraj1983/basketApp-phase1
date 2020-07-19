@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:basketapp/ForgetPassword_Screen.dart';
 import 'package:basketapp/database/DataCollection.dart';
 import 'package:basketapp/widget/Custom_AppBar.dart';
@@ -112,16 +113,31 @@ class Account extends State<Account_Screen> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         GestureDetector(
-                            child: _image == null
-                                ? WidgetFactory().getImageFromDatabase(
-                                context,
-                                firebaseUser == null ? null : firebaseUser
-                                    .photoUrl)
-                                : Image.file(
-                                    _image,
-                                    width: 150,
-                                    height: 150,
-                                  ),
+                            child: firebaseUser.providerData[1].providerId ==
+                                    "password"
+                                ? _image == null
+                                    ? WidgetFactory().getImageFromDatabase(
+                                        context,
+                                        firebaseUser == null
+                                            ? null
+                                            : firebaseUser.photoUrl)
+                                    : Image.file(
+                                        _image,
+                                        width: 150,
+                                        height: 150,
+                                      )
+                                : firebaseUser.providerData[1].providerId ==
+                                        "google.com"
+                                    ? WidgetFactory()
+                                        .getImageFromDatabaseByGoogle(
+                                            firebaseUser == null
+                                                ? null
+                                                : firebaseUser.photoUrl)
+                                    : Image.file(
+                                        _image,
+                                        width: 150,
+                                        height: 150,
+                                      ),
                             onTap: () async {
                               final _picker = ImagePicker();
                               PickedFile imagePath = await _picker.getImage(
@@ -152,13 +168,13 @@ class Account extends State<Account_Screen> {
                         ),
                         _verticalDivider(),
                         /* new Text(
-                          "${firebaseUser.phoneNumber}",
-                          style: TextStyle(
-                              color: Colors.black45,
-                              fontSize: 13.0,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.5),
-                        ),*/
+                                  "${firebaseUser.phoneNumber}",
+                                  style: TextStyle(
+                                      color: Colors.black45,
+                                      fontSize: 13.0,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.5),
+                                ),*/
                         _verticalDivider(),
                         new Text(
                           "${firebaseUser.email}",
@@ -196,7 +212,6 @@ class Account extends State<Account_Screen> {
                           icon: ofericon,
                           color: Colors.blueAccent,
                           onPressed: () {
-
                             _showEditPopUp();
                           }),
                     )
@@ -217,9 +232,7 @@ class Account extends State<Account_Screen> {
                   fontSize: 18.0),
             ),
           ),
-
           WidgetFactory().getCustomerAddress(context, formKey),
-
           new Container(
             margin: EdgeInsets.all(7.0),
             child: Card(
@@ -254,43 +267,43 @@ class Account extends State<Account_Screen> {
             ),
           ),
           /*new Container(
-                    margin: EdgeInsets.all(7.0),
-                    child: Card(
-                      elevation: 1.0,
-                      child: Row(
-                        children: <Widget>[
-                          new IconButton(icon: clear, onPressed: null),
-                          _verticalD(),
-                          new Text(
-                            'Clear History',
-                            style: TextStyle(
-                              fontSize: 15.0,
-                              color: Colors.black87,
+                            margin: EdgeInsets.all(7.0),
+                            child: Card(
+                              elevation: 1.0,
+                              child: Row(
+                                children: <Widget>[
+                                  new IconButton(icon: clear, onPressed: null),
+                                  _verticalD(),
+                                  new Text(
+                                    'Clear History',
+                                    style: TextStyle(
+                                      fontSize: 15.0,
+                                      color: Colors.black87,
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),*/
+                          ),*/
           /*new Container(
-                    margin: EdgeInsets.all(7.0),
-                    child: Card(
-                      elevation: 1.0,
-                      child: Row(
-                        children: <Widget>[
-                          new IconButton(icon: logout, onPressed: null),
-                          _verticalD(),
-                          new Text(
-                            'Deactivate Account',
-                            style: TextStyle(
-                              fontSize: 15.0,
-                              color: Colors.redAccent,
+                            margin: EdgeInsets.all(7.0),
+                            child: Card(
+                              elevation: 1.0,
+                              child: Row(
+                                children: <Widget>[
+                                  new IconButton(icon: logout, onPressed: null),
+                                  _verticalD(),
+                                  new Text(
+                                    'Deactivate Account',
+                                    style: TextStyle(
+                                      fontSize: 15.0,
+                                      color: Colors.redAccent,
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                          )
-                        ],
-                      ),
-                    ),
-                  )*/
+                          )*/
         ],
       ))),
     );
@@ -360,5 +373,4 @@ class Account extends State<Account_Screen> {
       _image = File(imagePath.path);
     });
   }
-
 }
