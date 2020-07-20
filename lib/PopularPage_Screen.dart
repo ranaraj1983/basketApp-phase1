@@ -35,7 +35,7 @@ class _PopularPage_Screen extends State<PopularPage_Screen> {
       key: _scaffoldKey,
       drawer: Navigation_Drawer(new Auth()),
       bottomNavigationBar:
-          Custom_AppBar().getButtomNavigation(context, firebaseUser),
+          Custom_AppBar().getBottomNavigation(context, firebaseUser),
       appBar: Custom_AppBar().getAppBar(context),
       body: _getNewItem(context),
     );

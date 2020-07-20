@@ -62,17 +62,11 @@ class _ForgetPassword_Screen extends State<ForgetPassword_Screen> {
       key: _scaffoldKey,
       drawer: Navigation_Drawer(new Auth()),
       bottomNavigationBar:
-      Custom_AppBar().getButtomNavigation(context, firebaseUser),
+          Custom_AppBar().getBottomNavigation(context, firebaseUser),
       appBar: Custom_AppBar().getAppBar(context),
       body: Container(
-        height: MediaQuery
-            .of(context)
-            .size
-            .height,
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
         color: Color(0xFF6CA8F1),
         child: Form(
           key: _formKey,

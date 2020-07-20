@@ -1,3 +1,7 @@
+Plan to apply
+===============
+animated_text_kit 2.2.0
+======================
 # basketapp
 
 A new Flutter application.
@@ -70,9 +74,13 @@ keytool -list -v \
 
 facebook
 ===========
-keytool -exportcert -alias key -keystore /Users/dasinfosolutions/key.jks | openssl sha1 -binary | openssl base64
+keytool -exportcert -alias key -keystore /Users/dasinfosolutions/ | openssl sha1 -binary | openssl base64
+nQvNkpDsLvKow0qPyod3lLptNh0=
 TZJjFS0wfjZEQ9o07aiQX2dk0vY=
 
+
+
+keytool -exportcert -alias YOUR_RELEASE_KEY_ALIAS -keystore YOUR_RELEASE_KEY_PATH | openssl sha1 -binary | openssl base64
 =====================
 
 4D:92:63:15:2D:30:7E:36:44:43:DA:34:ED:A8:90:5F:67:64:D2:F6
@@ -110,28 +118,5 @@ Version: 1
 
 *******************************************
 *******************************************
-TextFormField(
-                                      decoration: const InputDecoration(
-                                          border: UnderlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                          ),
-                                          focusedBorder:  UnderlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                          ),
-                                          icon: Icon(Icons.email,color: Colors.black38,),
-                                          hintText: 'Your email address',
-                                          labelText: 'E-mail',
-                                          labelStyle: TextStyle(color: Colors.black54)
-                                      ),
-                                      keyboardType: TextInputType.emailAddress,
-                                      validator: (val) =>
-                                      !val.contains('@') ? 'Not a valid email.' : null,
-                                      onSaved: (val) => _email = val,
-                                    ),
 
-
-                                                ? null
-                                                : firebaseUser.providerData[1].providerId == null
-                                                ? firebaseUser.photoUrl
-                                                : firebaseUser.photoUrl
 

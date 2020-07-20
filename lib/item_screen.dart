@@ -41,7 +41,7 @@ class _itemPageState extends State<Item_Screen> {
       key: _scaffoldKey,
       drawer: Navigation_Drawer(new Auth()),
       bottomNavigationBar:
-          Custom_AppBar().getButtomNavigation(context, firebaseUser),
+          Custom_AppBar().getBottomNavigation(context, firebaseUser),
       appBar: Custom_AppBar().getAppBar(context),
       body: _getItemByCategory(widget.categoryName, context),
     );

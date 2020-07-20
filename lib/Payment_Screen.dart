@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:basketapp/CustomerOffer_Screen.dart';
 import 'package:basketapp/database/Auth.dart';
 import 'package:basketapp/database/DataCollection.dart';
 import 'package:basketapp/item_details.dart';
@@ -8,6 +9,7 @@ import 'package:basketapp/OderHistory_Screen.dart';
 import 'package:basketapp/services/Order_Service.dart';
 import 'package:basketapp/widget/Custom_AppBar.dart';
 import 'package:basketapp/widget/Navigation_Drwer.dart';
+import 'package:basketapp/widget/WidgetFactory.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -75,8 +77,8 @@ class _Paymet_Screen extends State<Payment_Screen> {
     return new Scaffold(
       key: _scaffoldKey,
       drawer: Navigation_Drawer(new Auth()),
-      bottomNavigationBar: Custom_AppBar().getButtomNavigation(
-          context, firebaseUser),
+      bottomNavigationBar:
+          Custom_AppBar().getBottomNavigation(context, firebaseUser),
       appBar: Custom_AppBar().getAppBar(context),
       body: new Column(
         children: <Widget>[
@@ -354,10 +356,11 @@ class _Paymet_Screen extends State<Payment_Screen> {
                 alignment: Alignment.center,
                 child: OutlineButton(
                     borderSide: BorderSide(color: Colors.green),
-                    child: const Text('PROCEED TO Order'),
+                    child: const Text('PROCEED TO ORDER'),
                     textColor: Colors.green,
                     onPressed: () {
-                      DataCollection().addOrder(
+                      _getScrachCardPopup(context, totalPrice);
+                      /* DataCollection().addOrder(
                           Custom_AppBar().getCartList(), totalPrice, true);
                       new Timer(new Duration(seconds: 1), () {
                         debugPrint("Print after 5 seconds");
@@ -372,7 +375,7 @@ class _Paymet_Screen extends State<Payment_Screen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => OderHistory_Screen()));
+                              builder: (context) => OderHistory_Screen()));*/
                     },
                     shape: new OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30.0),
@@ -385,11 +388,17 @@ class _Paymet_Screen extends State<Payment_Screen> {
     );
   }
 
-  _verticalDivider() => Container(
+  _verticalDivider() =>
+      Container(
         padding: EdgeInsets.all(2.0),
       );
 
-  _verticalD() => Container(
+  _verticalD() =>
+      Container(
         margin: EdgeInsets.only(left: 5.0),
       );
+
+  void _getScrachCardPopup(BuildContext context, int totalPrice) {
+    WidgetFactory().scratchCardDialog(context, totalPrice);
+  }
 }

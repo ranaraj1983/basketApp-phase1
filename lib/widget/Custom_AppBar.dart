@@ -1,4 +1,5 @@
 import 'package:basketapp/Account_screen.dart';
+import 'package:basketapp/CustomerOffer_Screen.dart';
 import 'package:basketapp/HomeScreen.dart';
 import 'package:basketapp/checkout_screen.dart';
 import 'package:basketapp/database/Auth.dart';
@@ -162,39 +163,11 @@ class Custom_AppBar {
                 )
             ),
           ),
-          /*IconButton(
-            tooltip: 'Search',
-            icon: const Icon(Icons.search),
 
-            onPressed: () {
-              showSearch(
-                context: context,
-                delegate: ItemSearchDelegate(),
-              );
-            },
-          ),*/
-          /*SearchBar(
-            searchBarStyle: SearchBarStyle(
-              backgroundColor: Colors.yellow,
-              padding: EdgeInsets.all(1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            onSearch: _getSearchItem,
-          ),*/
         ),
       ),
       //backgroundColor: Colors.lime[400],
       actions: <Widget>[
-        /*IconButton(
-          tooltip: 'Search',
-          icon: const Icon(Icons.search),
-          onPressed: () {
-            showSearch(
-              context: context,
-              delegate: ItemSearchDelegate(),
-            );
-          },
-        ),*/
 
         Observer(
             builder: (_) =>
@@ -240,17 +213,19 @@ class Custom_AppBar {
       )
       );
     } else if (index == 1) {
-      /*print("inside offer");
+      print("inside offer");
       var categoryList = DataCollection().getCategories();
-      Navigator.push(context, MaterialPageRoute(
-        builder: (context) => CustomOrder_Screen(),
-      ));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CustomerOffer_Screen(),
+          ));
       categoryList.then((value) {
         value.documents.forEach((element) {
           //element.documentID;
           print(element.documentID);
         });
-      });*/
+      });
     } else if (index == 2) {
       firebaseUser == null ? WidgetFactory()
           .logInDialog(context) : Navigator.push(context, MaterialPageRoute(
@@ -265,7 +240,7 @@ class Custom_AppBar {
     }
   }
 
-  Widget getButtomNavigation(BuildContext context, FirebaseUser firebaseUser) {
+  Widget getBottomNavigation(BuildContext context, FirebaseUser firebaseUser) {
     return BottomNavigationBar(
 
       items: const <BottomNavigationBarItem>[
@@ -276,7 +251,7 @@ class Custom_AppBar {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.card_giftcard, color: Colors.yellow),
-          title: Text('Add Item', style: TextStyle(
+          title: Text('Offer', style: TextStyle(
               color: Colors.yellow, fontWeight: FontWeight.bold)),
         ),
         BottomNavigationBarItem(
@@ -343,7 +318,7 @@ class ItemSearchDelegate extends SearchDelegate<Product_Item> {
         future: DataCollection().getCategoryList(),
         builder: (_, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Text("Searching");
+            return CircularProgressIndicator();
           } else {
             return ListView.builder(
               shrinkWrap: true,
@@ -356,7 +331,7 @@ class ItemSearchDelegate extends SearchDelegate<Product_Item> {
                         snapshot.data[index].documentID, query),
                     builder: (_, snp) {
                       if (snp.connectionState == ConnectionState.waiting) {
-                        return Text("");
+                        return CircularProgressIndicator();
                       } else {
                         return ListView.builder(
                             scrollDirection: Axis.vertical,

@@ -71,7 +71,7 @@ class signup extends State<Signup_Screen> {
         key: _scaffoldKey,
         drawer: Navigation_Drawer(new Auth()),
         bottomNavigationBar:
-            Custom_AppBar().getButtomNavigation(context, firebaseUser),
+            Custom_AppBar().getBottomNavigation(context, firebaseUser),
         appBar: Custom_AppBar().getAppBar(context),
         body: SafeArea(
             child: new SingleChildScrollView(

@@ -139,7 +139,7 @@ class _OrderHistory_Screen extends State<OderHistory_Screen> {
       key: _scaffoldKey,
       drawer: Navigation_Drawer(new Auth()),
       bottomNavigationBar:
-          Custom_AppBar().getButtomNavigation(context, firebaseUser),
+          Custom_AppBar().getBottomNavigation(context, firebaseUser),
       appBar: Custom_AppBar().getAppBar(context),
       body: _getOrderHistoryPage(context),
     );

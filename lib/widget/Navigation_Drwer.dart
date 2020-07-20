@@ -11,6 +11,7 @@ import 'package:basketapp/widget/WidgetFactory.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:translator/translator.dart';
 
 class Navigation_Drawer extends StatefulWidget {
   Navigation_Drawer(this.auth);
@@ -60,14 +61,42 @@ class _Navigation_Drawer extends State<Navigation_Drawer> {
     });
   }
 
+  void _transletString(String input) async {
+    final translator = GoogleTranslator();
+    var translation = await translator.translate(input, to: 'bn');
+    print(translation);
+  }
+
   Widget _getUserProfile() {
+    final input = "go mudi";
+    _transletString(input);
     return UserAccountsDrawerHeader(
-      //accountName: Text("Rana"),
+      accountName: Text(firebaseUser == null ? "" : firebaseUser.displayName),
       accountEmail: Text(firebaseUser == null ? "" : firebaseUser.email),
       currentAccountPicture: CircleAvatar(
         backgroundColor: Colors.yellowAccent,
-        child: WidgetFactory().getImageFromDatabase(
-            context, firebaseUser == null ? null : firebaseUser.photoUrl),
+        child: firebaseUser == null
+            ? null
+            : firebaseUser.providerData[1].providerId == "password"
+                ? _image == null
+                    ? WidgetFactory()
+                        .getImageFromDatabase(context, firebaseUser.photoUrl)
+                    : Image.file(
+                        _image,
+                        width: 150,
+                        height: 150,
+                      )
+                : firebaseUser.providerData[1].providerId == "google.com"
+                    ? WidgetFactory().getImageFromDatabaseByGoogle(
+                        firebaseUser == null ? null : firebaseUser.photoUrl)
+                    : Image.file(
+                        _image,
+                        width: 150,
+                        height: 150,
+                      ),
+
+        /* WidgetFactory().getImageFromDatabase(
+            context, firebaseUser == null ? null : firebaseUser.photoUrl),*/
       ),
       otherAccountsPictures: [
         CircleAvatar(

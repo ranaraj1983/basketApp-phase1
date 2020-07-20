@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:basketapp/HomeScreen.dart';
 import 'package:basketapp/Payment_Screen.dart';
 import 'package:basketapp/database/Auth.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:scratcher/scratcher.dart';
 
 class WidgetFactory {
   final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
@@ -804,5 +806,52 @@ class WidgetFactory {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<void> scratchCardDialog(BuildContext context, int offerPrice) {
+    offerPrice = offerPrice ~/ 90;
+
+    return AwesomeDialog(
+      context: context,
+      dialogType: DialogType.SUCCES,
+      animType: AnimType.RIGHSLIDE,
+      headerAnimationLoop: false,
+      title: 'You\'ve won a scratch card',
+      desc: "error.toString()",
+      btnOkOnPress: () {
+        DataCollection().addOfferToCustomrWalet(offerPrice);
+        print("ok clicked");
+      },
+      btnOkIcon: Icons.cancel,
+      btnOkColor: Colors.red,
+      body: Scratcher(
+        accuracy: ScratchAccuracy.low,
+        threshold: 25,
+        brushSize: 50,
+        onThreshold: () {},
+        image: Image.asset("images/diamond_bw.png"),
+        child: AnimatedOpacity(
+          duration: Duration(milliseconds: 250),
+          opacity: 1,
+          child: Container(
+            height: 300,
+            width: 300,
+            alignment: Alignment.bottomCenter,
+            child: Column(
+              children: [
+                Text('You\'ve won a scratch card'),
+                Text(
+                  "INR " + (offerPrice).toString(),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 50,
+                      color: Colors.blue),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ).show();
   }
 }

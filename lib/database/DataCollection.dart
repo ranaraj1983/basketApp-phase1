@@ -503,4 +503,18 @@ class DataCollection {
   Future _getUserAddress(String uid) async {
     return await firestoreInstance.collection("User").document(uid).get();
   }
+
+  void addOfferToCustomrWalet(int offerPrice) async {
+    String userId = await Auth().getCurrentUserId();
+    firestoreInstance
+        .collection("User").document(userId).collection("Wallet")
+        .document()
+        .setData(
+        {
+          'offerPrice': offerPrice,
+          'date': new DateTime.now(),
+          'status': "NEW"
+        }
+    );
+  }
 }

@@ -39,7 +39,7 @@ class _AddProduct_Screen extends State<AddProduct_Screen> {
       key: _scaffoldKey,
       drawer: Navigation_Drawer(new Auth()),
       bottomNavigationBar:
-          Custom_AppBar().getButtomNavigation(context, firebaseUser),
+          Custom_AppBar().getBottomNavigation(context, firebaseUser),
       appBar: Custom_AppBar().getAppBar(context),
       body: _addProductScreenBody(context),
     );

@@ -59,7 +59,7 @@ class _CheckOut_Screen extends State<Checkout> {
       drawer: Navigation_Drawer(new Auth()),
       appBar: Custom_AppBar().getAppBar(context),
       bottomNavigationBar:
-          Custom_AppBar().getButtomNavigation(context, firebaseUser),
+          Custom_AppBar().getBottomNavigation(context, firebaseUser),
       body: _getCheckOutBodyWidget(),
     );
   }

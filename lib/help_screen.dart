@@ -60,7 +60,7 @@ class Help extends State<Help_Screen> {
         key: _scaffoldKey,
         drawer: Navigation_Drawer(new Auth()),
         bottomNavigationBar:
-        Custom_AppBar().getButtomNavigation(context, firebaseUser),
+            Custom_AppBar().getBottomNavigation(context, firebaseUser),
         appBar: Custom_AppBar().getAppBar(context),
         body: Container(
           child: Column(

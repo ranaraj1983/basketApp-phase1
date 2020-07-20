@@ -59,12 +59,12 @@ class Auth implements BaseAuth {
   Future<FirebaseUser> signupWithFacebook(BuildContext context) async {
     final FacebookLogin facebookSignIn = new FacebookLogin();
     try {
-
+      var user = await facebookSignIn.logIn(['email', 'public_profile']);
+      print(user);
     } catch (error) {
       print(error);
     }
-    await facebookSignIn
-        .logIn(['email', 'public_profile']).then((result) async {
+    /* .then((result) async {
       switch (result.status) {
         case FacebookLoginStatus.loggedIn:
           await _firebaseAuth
@@ -85,7 +85,7 @@ class Auth implements BaseAuth {
       }
     }).catchError((onError) {
       print(onError);
-    });
+    });*/
   }
 
   Future<void> resetPassword(String password) async {

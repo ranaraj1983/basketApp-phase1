@@ -102,7 +102,7 @@ class item_details extends State<Item_Details> {
         key: _scaffoldKey,
         drawer: Navigation_Drawer(new Auth()),
         bottomNavigationBar:
-            Custom_AppBar().getButtomNavigation(context, firebaseUser),
+            Custom_AppBar().getBottomNavigation(context, firebaseUser),
         appBar: Custom_AppBar().getAppBar(context),
         body: Container(
             padding: const EdgeInsets.all(8.0),
