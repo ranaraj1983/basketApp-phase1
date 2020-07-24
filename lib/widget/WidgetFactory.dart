@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:basketapp/HomeScreen.dart';
+import 'package:basketapp/OderHistory_Screen.dart';
 import 'package:basketapp/Payment_Screen.dart';
 import 'package:basketapp/database/Auth.dart';
 import 'package:basketapp/database/DataCollection.dart';
@@ -28,8 +30,7 @@ class WidgetFactory {
     });
   }
 
-  Widget getSearchListView(
-      BuildContext context, var categorySnapshot, var itemSnapshot) {
+  Widget getSearchListView(BuildContext context, var categorySnapshot, var itemSnapshot) {
     return ListView(
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
@@ -212,37 +213,37 @@ class WidgetFactory {
   Widget getImageFromDatabase(BuildContext context, String imageUrl) {
     return (imageUrl == null
         ? Container(
-            height: 100,
-            width: 100,
-            child: Image.asset("images/noprofileimage.png"))
+        height: 100,
+        width: 100,
+        child: Image.asset("images/noprofileimage.png"))
         : FutureBuilder(
-            future: DataCollection()
-                .getImageFromStorage(context, imageUrl, 100, 100),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  child: Stack(
-                    children: <Widget>[
-                      snapshot.data == null
-                          ? Container(
-                              height: 100,
-                              width: 100,
-                              child: Image.asset("images/noprofileimage.png"))
+        future: DataCollection()
+            .getImageFromStorage(context, imageUrl, 100, 100),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              child: Stack(
+                children: <Widget>[
+                  snapshot.data == null
+                      ? Container(
+                      height: 100,
+                      width: 100,
+                      child: Image.asset("images/noprofileimage.png"))
 
-                          /*Image.network(
+                  /*Image.network(
                           'https://www.fakenamegenerator.com/images/sil-female.png')*/
-                          : snapshot.data,
-                      //snapshot.data,
-                    ],
-                  ),
-                );
-              } else {
-                return Container(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            }
+                      : snapshot.data,
+                  //snapshot.data,
+                ],
+              ),
+            );
+          } else {
+            return Container(
+              child: CircularProgressIndicator(),
+            );
+          }
+        }
     )
     );
   }
@@ -566,7 +567,6 @@ class WidgetFactory {
                         user.email,
                         "India");
                   }
-
                 },
               ),
             ],
@@ -808,8 +808,8 @@ class WidgetFactory {
     }
   }
 
-  Future<void> scratchCardDialog(BuildContext context, int offerPrice) {
-    offerPrice = offerPrice ~/ 90;
+  Future<void> scratchCardDialog(BuildContext context, int totalPrice) async {
+    int offerPrice = totalPrice ~/ 90;
 
     return AwesomeDialog(
       context: context,
@@ -818,9 +818,23 @@ class WidgetFactory {
       headerAnimationLoop: false,
       title: 'You\'ve won a scratch card',
       desc: "error.toString()",
-      btnOkOnPress: () {
-        DataCollection().addOfferToCustomrWalet(offerPrice);
-        print("ok clicked");
+      btnOkOnPress: () async {
+        await DataCollection()
+            .addOrder(Custom_AppBar().getCartList(), totalPrice, true)
+            .then((value) => {
+                  DataCollection().addOfferToCustomrWalet(offerPrice),
+                  print("then"),
+                })
+            .whenComplete(() => {
+                  Custom_AppBar().clearCart(),
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => OderHistory_Screen())),
+                  print("complete"),
+                });
+
+        /* */
       },
       btnOkIcon: Icons.cancel,
       btnOkColor: Colors.red,

@@ -133,7 +133,7 @@ class DataCollection {
     return qs;
   }
 
-  void addOrder(ObservableList<Product_Item> cartList, int totalAmount,
+  Future<void> addOrder(ObservableList<Product_Item> cartList, int totalAmount,
       bool courierChargeApplied) async {
     int courierCharge = 0;
     //int amount = totalAmount;
@@ -151,7 +151,10 @@ class DataCollection {
         .document(masterOrderId)
         .collection(masterOrderId);
 
-    firestoreInstance.collection("Order").document(masterOrderId).setData({
+    await firestoreInstance
+        .collection("Order")
+        .document(masterOrderId)
+        .setData({
       'orderId': masterOrderId,
       'amount': totalAmount,
       'totalAmount': totalAmount + courierCharge,
@@ -165,19 +168,19 @@ class DataCollection {
       //"address" :
     });
 
-    cartList.forEach((element) {
+    cartList.forEach((element) async {
       String orderId = "#GMDI" + new Random().toString();
       try {
-        masterOrderSnapshot.document(element.itemName).setData(({
-              'itemId': element.itemId,
-              'itemName': element.itemName,
-              'imageUrl': element.imageUrl,
-              'description': element.description,
-              'quantity': element.quantity,
-              'price': element.price,
-              'orderId': orderId,
-              "totalAmount": totalAmount
-            }));
+        await masterOrderSnapshot.document(element.itemName).setData(({
+          'itemId': element.itemId,
+          'itemName': element.itemName,
+          'imageUrl': element.imageUrl,
+          'description': element.description,
+          'quantity': element.quantity,
+          'price': element.price,
+          'orderId': orderId,
+          "totalAmount": totalAmount
+        }));
       } catch (error) {
         debugPrint(error.toString());
       }
@@ -516,5 +519,11 @@ class DataCollection {
           'status': "NEW"
         }
     );
+  }
+
+  Future getCustomerOfferList() async {
+    String userId = await Auth().getCurrentUserId();
+    return await firestoreInstance.collection("User/${userId}/Wallet/").orderBy(
+        "date").getDocuments();
   }
 }

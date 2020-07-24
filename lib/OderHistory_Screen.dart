@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:basketapp/PdfViewerPage.dart';
 import 'package:basketapp/Util/PdfGenerator.dart';
 import 'package:basketapp/database/Auth.dart';
 import 'package:basketapp/database/DataCollection.dart';
@@ -9,8 +8,6 @@ import 'package:basketapp/model/Product_Item.dart';
 import 'package:basketapp/widget/Custom_AppBar.dart';
 import 'package:basketapp/widget/Navigation_Drwer.dart';
 import 'package:basketapp/widget/WidgetFactory.dart';
-import 'package:open_file/open_file.dart';
-import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -158,7 +155,7 @@ class _OrderHistory_Screen extends State<OderHistory_Screen> {
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context, index) {
               var itemData = snapshot.data.documents[index].data;
-             // print(DateTime.parse(itemData['orderDate'].toDate().toString()).toLocal().toString());
+              // print(DateTime.parse(itemData['orderDate'].toDate().toString()).toLocal().toString());
 
               return Container(
                 child: Column(
@@ -173,9 +170,13 @@ class _OrderHistory_Screen extends State<OderHistory_Screen> {
                           children: [
                             Expanded(
                               child: Container(
-
-                                child: Text(itemData['orderId'] + "\n \n Date " +
-                                    DateTime.parse(itemData['orderDate'].toDate().toString()).toLocal().toString() ),
+                                child: Text(itemData['orderId'] +
+                                    "\n \n Date " +
+                                    DateTime.parse(itemData['orderDate']
+                                            .toDate()
+                                            .toString())
+                                        .toLocal()
+                                        .toString()),
                               ),
                             ),
                             Expanded(
@@ -188,9 +189,7 @@ class _OrderHistory_Screen extends State<OderHistory_Screen> {
                                 children: [
                                   RaisedButton(
                                     onPressed: () {
-                                      _generatePdfAndView(
-                                          context, itemData);
-                                      print("clicked");
+                                      _generatePdfAndView(context, itemData);
                                     },
                                     child: Text("Invoice"),
                                   ),
@@ -298,85 +297,71 @@ class _OrderHistory_Screen extends State<OderHistory_Screen> {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       scrollable: true,
-      title: Text("My Order"),
+      title: Text("My Orderlist ${docId}"),
       content: Container(
-        width: MediaQuery.of(context).size.width * 0.9,
-        height: MediaQuery.of(context).size.height * 0.9,
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
+        height: MediaQuery
+            .of(context)
+            .size
+            .height,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          //mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             FutureBuilder(
                 future: DataCollection().getSubCollectionOfOrder(docId),
                 builder: (_, snp) {
                   if (snp.connectionState == ConnectionState.waiting) {
                     return Center(
-                      child: Text("Loading...."),
+                      child: CircularProgressIndicator(),
                     );
                   } else {
                     return ListView.builder(
-                      physics: AlwaysScrollableScrollPhysics(),
-                      primary: true,
+                      physics: ScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: snp.data.documents.length,
                       itemBuilder: (context, index) {
                         var itemData = snp.data.documents[index].data;
-                        return Container(
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                margin: EdgeInsets.only(
-                                    left: 5.0, right: 5.0, bottom: 5.0),
-                                color: Colors.black12,
-                                child: Column(
-                                  children: <Widget>[
-                                    WidgetFactory().getImageFromDatabase(
+                        int tVal = int.parse(itemData['price']) *
+                            int.parse(itemData['quantity']);
+                        return
+                          Container(
+
+                            child: Row(
+
+                              children: [
+
+                                Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: WidgetFactory().getImageFromDatabase(
                                         context, itemData['imageUrl']),
-                                    Row(
-                                      children: <Widget>[
-                                        Column(
-                                          children: <Widget>[],
-                                        ),
-                                        Column(
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Row(
-                                                    children: <Widget>[
-                                                      Text(
-                                                          itemData['itemName']),
-                                                    ],
-                                                  ),
-                                                  VerticalDivider(),
-                                                ],
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Text(itemData['price']),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
-
-                                      ],
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                        itemData['itemName']),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                      itemData['price'] + " X " +
+                                          itemData['quantity'] + " = " +
+                                          tVal.toString()
 
-                              //Text("test"),
-                            ],
-                          ),
-                        );
+                                  ),
+                                ),
+
+                              ],
+                            ),
+
+                          );
                       },
                     );
-
-
                   }
                 }),
           ],

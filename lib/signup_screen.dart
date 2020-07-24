@@ -32,11 +32,10 @@ class Signup_Screen extends StatefulWidget {
   }
 
   @override
-  State<StatefulWidget> createState() => signup();
+  State<StatefulWidget> createState() => Signup();
 }
 
-class signup extends State<Signup_Screen> {
-
+class Signup extends State<Signup_Screen> {
   ShapeBorder shape;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final formKey = GlobalKey<FormState>();
@@ -63,18 +62,51 @@ class signup extends State<Signup_Screen> {
     });
   }
 
+  final kHintTextStyle = TextStyle(
+    color: Colors.yellowAccent,
+    fontFamily: 'OpenSans',
+  );
+
+  final kLabelStyle = TextStyle(
+
+    color: Colors.yellowAccent,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'OpenSans',
+  );
+
+  final kBoxDecorationStyle = BoxDecoration(
+    color: Color(0xFF6CA8F1),
+    borderRadius: BorderRadius.circular(10.0),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black12,
+        blurRadius: 6.0,
+        offset: Offset(0, 2),
+      ),
+    ],
+  );
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     bool _obscureText = true;
     return new Scaffold(
-        key: _scaffoldKey,
-        drawer: Navigation_Drawer(new Auth()),
-        bottomNavigationBar:
-            Custom_AppBar().getBottomNavigation(context, firebaseUser),
-        appBar: Custom_AppBar().getAppBar(context),
-        body: SafeArea(
-            child: new SingleChildScrollView(
+      key: _scaffoldKey,
+      drawer: Navigation_Drawer(new Auth()),
+      bottomNavigationBar:
+      Custom_AppBar().getBottomNavigation(context, firebaseUser),
+      appBar: Custom_AppBar().getAppBar(context),
+      body: _getBody(),
+    );
+  }
+
+  Widget _getSignupBody() {
+
+  }
+
+  Widget _getBody() {
+    return SafeArea(
+        child: new SingleChildScrollView(
           child: new Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -83,218 +115,224 @@ class signup extends State<Signup_Screen> {
                 alignment: Alignment.topLeft,
                 margin: EdgeInsets.only(top: 7.0),
                 child: new Row(
-                      children: <Widget>[
-                        _verticalD(),
-                        new GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Login_Screen()));
-                          },
-                          child: new Text(
-                            'Login',
-                            style: TextStyle(
-                                fontSize: 20.0,
-                                color: Colors.black26,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        _verticalD(),
-                        new GestureDetector(
-                          onTap: () {
-                            /*Navigator.push(
+                  children: <Widget>[
+                    _verticalD(),
+                    new GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Login_Screen()));
+                      },
+                      child: new Text(
+                        'Login',
+                        style: TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.black26,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    _verticalD(),
+                    new GestureDetector(
+                      onTap: () {
+                        /*Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => signup_screen()));*/
-                          },
-                          child: new Text(
-                            'Signup',
-                            style: TextStyle(
-                                fontSize: 20.0,
-                                color: Colors.black87,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ],
+                      },
+                      child: new Text(
+                        'Signup',
+                        style: TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                  new SafeArea(
-
-                      top: false,
-                      bottom: false,
-                      child: Card(
-                          elevation: 5.0,
-                          child: Form(
-                              key: formKey,
-                              autovalidate: _autovalidate,
-                              child: SingleChildScrollView(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                                    children: <Widget>[
-
-                                      const SizedBox(height: 24.0),
-                                      TextFormField(
-                                        decoration: const InputDecoration(
-                                            border: UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                            ),
-                                            focusedBorder:  UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                            ),
-                                            icon: Icon(Icons.person,color: Colors.black38,),
-                                            hintText: 'Enter first name',
-                                            labelText: 'First Name',
-                                            labelStyle: TextStyle(color: Colors.black54)
-                                        ),
-                                        keyboardType: TextInputType.text,
-                                        validator: (val) =>
-                                        val.length < 1 ? 'Enter first name' : null,
-                                        onSaved: (val) => _firstname = val,
-                                      ),
-                                      const SizedBox(height: 24.0),
-                                      TextFormField(
-                                        decoration: const InputDecoration(
-                                            border: UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                            ),
-                                            focusedBorder:  UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                            ),
-                                            icon: Icon(Icons.perm_identity,color: Colors.black38,),
-                                            hintText: 'Enter last name',
-                                            labelText: 'Last Name',
-                                            labelStyle: TextStyle(color: Colors.black54)
-                                        ),
-                                        keyboardType: TextInputType.text,
-                                        validator: (val) =>
-                                        val.length < 1 ? 'Enter last name' : null,
-                                        onSaved: (val) => _lastname = val,
-                                      ),
-                                      const SizedBox(height: 24.0),
-                                      TextFormField(
-                                        decoration: const InputDecoration(
-                                            border: UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                            ),
-                                            focusedBorder:  UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                            ),
-                                            icon: Icon(Icons.email,color: Colors.black38,),
-                                            hintText: 'Your email address',
-                                            labelText: 'E-mail',
-                                            labelStyle: TextStyle(color: Colors.black54)
-                                        ),
-                                        keyboardType: TextInputType.emailAddress,
-                                        validator: validateEmail,
-                                        onSaved: (String val) {
-                                          _email = val;
-                                        },
-                                      ),
-
-                                      const SizedBox(height: 24.0),
-                                      TextFormField(
-                                        decoration: const InputDecoration(
-                                            border: UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                            ),
-                                            focusedBorder:  UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                            ),
-                                            icon: Icon(Icons.phone_android,color: Colors.black38,),
-                                            hintText: 'Your phone number',
-                                            labelText: 'Phone',
-                                            labelStyle: TextStyle(color: Colors.black54)
-                                        ),
-                                        keyboardType: TextInputType.phone,
-                                        validator: validateMobile,
-                                        onSaved: (String val) {
-                                          _phone = val;
-                                        },
-                                      ),
-                                      const SizedBox(height: 24.0),
-                                      TextFormField(
-                                        obscureText: true,
-                                        decoration: const InputDecoration(
-                                            border: UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                            ),
-                                            focusedBorder:  UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                            ),
-                                            icon: Icon(Icons.lock,color: Colors.black38,),
-                                            hintText: 'Your password',
-                                            labelText: 'Password',
-                                            labelStyle: TextStyle(color: Colors.black54)
-                                        ),
-
-                                        validator: (val) =>
-                                        val.length < 6 ? 'Password too short.' : null,
-                                        onSaved: (val) => _password = val,
-                                      ),
-
-                                      SizedBox(height: 35.0,),
-                                      new Container(
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          children: <Widget>[
-
-                                            new Container(
-                                              alignment: Alignment.bottomRight,
-                                              child: new GestureDetector(
-                                                onTap: (){
-                                                  _submit();
-                                                },
-                                                child: Text('SIGNUP',style: TextStyle(
-                                                    color: Colors.orange,fontSize: 20.0,fontWeight: FontWeight.bold
-                                                ),),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-
-                                      /*   const SizedBox(height:24.0),
-
-                            new Row(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: <Widget>[
-
-                                new GestureDetector(
-                                  onTap: (){
-
-                                  },
-                                  child: Text('FORGOT PASSWORD?',style: TextStyle(
-                                    color: Colors.blueAccent,fontSize: 13.0
-                                  ),),
-                                ),
-
-                                new GestureDetector(
-                                  onTap: (){
-
-                                  },
-                                  child: Text('LOGIN',style: TextStyle(
-                                      color: Colors.orange,fontSize: 15.0
-                                  ),),
-                                ),
-
-                              ],
-                            )
-
-
-*/
-                                    ]
-                                ),
-                              )
-
-                          )        //login,
-                      ))
-                ],
+                  ],
+                ),
               ),
-            )
-        ));
+              new SafeArea(
+
+                  top: false,
+                  bottom: false,
+                  child: Card(
+                      elevation: 5.0,
+                      child: Form(
+                          key: formKey,
+                          autovalidate: _autovalidate,
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: <Widget>[
+
+                                  const SizedBox(height: 24.0),
+                                  TextFormField(
+                                    decoration: const InputDecoration(
+                                        border: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.black87,
+                                              style: BorderStyle.solid),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.black87,
+                                              style: BorderStyle.solid),
+                                        ),
+                                        icon: Icon(
+                                          Icons.person, color: Colors.black38,),
+                                        hintText: 'Enter first name',
+                                        labelText: 'First Name',
+                                        labelStyle: TextStyle(
+                                            color: Colors.black54)
+                                    ),
+                                    keyboardType: TextInputType.text,
+                                    validator: (val) =>
+                                    val.length < 1 ? 'Enter first name' : null,
+                                    onSaved: (val) => _firstname = val,
+                                  ),
+                                  const SizedBox(height: 24.0),
+                                  TextFormField(
+                                    decoration: const InputDecoration(
+                                        border: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.black87,
+                                              style: BorderStyle.solid),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.black87,
+                                              style: BorderStyle.solid),
+                                        ),
+                                        icon: Icon(Icons.perm_identity,
+                                          color: Colors.black38,),
+                                        hintText: 'Enter last name',
+                                        labelText: 'Last Name',
+                                        labelStyle: TextStyle(
+                                            color: Colors.black54)
+                                    ),
+                                    keyboardType: TextInputType.text,
+                                    validator: (val) =>
+                                    val.length < 1 ? 'Enter last name' : null,
+                                    onSaved: (val) => _lastname = val,
+                                  ),
+                                  const SizedBox(height: 24.0),
+                                  TextFormField(
+                                    decoration: const InputDecoration(
+                                        border: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.black87,
+                                              style: BorderStyle.solid),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.black87,
+                                              style: BorderStyle.solid),
+                                        ),
+                                        icon: Icon(
+                                          Icons.email, color: Colors.black38,),
+                                        hintText: 'Your email address',
+                                        labelText: 'E-mail',
+                                        labelStyle: TextStyle(
+                                            color: Colors.black54)
+                                    ),
+                                    keyboardType: TextInputType.emailAddress,
+                                    validator: validateEmail,
+                                    onSaved: (String val) {
+                                      _email = val;
+                                    },
+                                  ),
+
+                                  const SizedBox(height: 24.0),
+                                  TextFormField(
+                                    decoration: const InputDecoration(
+                                        border: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.black87,
+                                              style: BorderStyle.solid),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.black87,
+                                              style: BorderStyle.solid),
+                                        ),
+                                        icon: Icon(Icons.phone_android,
+                                          color: Colors.black38,),
+                                        hintText: 'Your phone number',
+                                        labelText: 'Phone',
+                                        labelStyle: TextStyle(
+                                            color: Colors.black54)
+                                    ),
+                                    keyboardType: TextInputType.phone,
+                                    validator: validateMobile,
+                                    onSaved: (String val) {
+                                      _phone = val;
+                                    },
+                                  ),
+                                  const SizedBox(height: 24.0),
+                                  TextFormField(
+                                    obscureText: true,
+                                    decoration: const InputDecoration(
+                                        border: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.black87,
+                                              style: BorderStyle.solid),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.black87,
+                                              style: BorderStyle.solid),
+                                        ),
+                                        icon: Icon(
+                                          Icons.lock, color: Colors.black38,),
+                                        hintText: 'Your password',
+                                        labelText: 'Password',
+                                        labelStyle: TextStyle(
+                                            color: Colors.black54)
+                                    ),
+
+                                    validator: (val) =>
+                                    val.length < 6
+                                        ? 'Password too short.'
+                                        : null,
+                                    onSaved: (val) => _password = val,
+                                  ),
+
+                                  SizedBox(height: 35.0,),
+                                  new Container(
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+
+                                        new Container(
+                                          alignment: Alignment.bottomRight,
+                                          child: new GestureDetector(
+                                            onTap: () {
+                                              _submit();
+                                            },
+                                            child: Text(
+                                              'SIGNUP', style: TextStyle(
+                                                color: Colors.orange,
+                                                fontSize: 20.0,
+                                                fontWeight: FontWeight.bold
+                                            ),),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                ]
+                            ),
+                          )
+
+                      ) //login,
+                  ))
+            ],
+          ),
+        )
+    );
   }
 
   String validateEmail(String value) {
@@ -357,7 +395,7 @@ class signup extends State<Signup_Screen> {
   void _perFormRegistration() {
     Auth().registerUser(_email, _password, _firstname, _lastname, _phone).
     then((value) {
-      _showSuccessAlert(value);
+      //_showSuccessAlert(value);
 
       print("Got Success: ${value}");
     }).catchError((e, stackTrace) {

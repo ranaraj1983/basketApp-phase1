@@ -151,9 +151,8 @@ class _Paymet_Screen extends State<Payment_Screen> {
                   color: Colors.green.shade100,
                   child: Container(
                       padding:
-                      const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 15.0),
-                      child: Text(
-                          "GET EXTRA 5% OFF* with MONEY bank Simply Save Credit card. T&C.",
+                          const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 15.0),
+                      child: Text("Only Cash On delivery",
                           maxLines: 10,
                           style: TextStyle(
                               fontSize: 13.0, color: Colors.black87))),
@@ -291,7 +290,8 @@ class _Paymet_Screen extends State<Payment_Screen> {
                 child: const Text('PROCEED TO Order'),
                 textColor: Colors.green,
                 onPressed: () {
-                  DataCollection().addOrder(
+                  _getScrachCardPopup(context, totalPrice);
+                  /*DataCollection().addOrder(
                       Custom_AppBar().getCartList(), totalPrice, false);
                   new Timer(new Duration(seconds: 1), () {
                     debugPrint("Print after 5 seconds");
@@ -306,7 +306,7 @@ class _Paymet_Screen extends State<Payment_Screen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => OderHistory_Screen()));
+                          builder: (context) => OderHistory_Screen()));*/
                 },
                 shape: new OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),
@@ -318,7 +318,7 @@ class _Paymet_Screen extends State<Payment_Screen> {
   }
 
   Widget _totalPriceWithCourierCharge() {
-    return Column(
+    return cartCounter.cartList.length > 0 ? Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       verticalDirection: VerticalDirection.down,
       mainAxisSize: MainAxisSize.max,
@@ -385,7 +385,8 @@ class _Paymet_Screen extends State<Payment_Screen> {
           ],
         ),
       ],
-    );
+    )
+        : Container();
   }
 
   _verticalDivider() =>

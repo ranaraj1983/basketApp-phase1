@@ -4,8 +4,12 @@ import 'package:basketapp/model/Order.dart';
 import 'package:basketapp/model/User.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+
+import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
+import 'package:mailer2/mailer.dart';
 
 abstract class BaseAuth {
   Future<FirebaseUser> signIn(String email, String password);
@@ -57,13 +61,13 @@ class Auth implements BaseAuth {
   }
 
   Future<FirebaseUser> signupWithFacebook(BuildContext context) async {
-    final FacebookLogin facebookSignIn = new FacebookLogin();
+    /*final FacebookLogin facebookSignIn = new FacebookLogin();
     try {
       var user = await facebookSignIn.logIn(['email', 'public_profile']);
       print(user);
     } catch (error) {
       print(error);
-    }
+    }*/
     /* .then((result) async {
       switch (result.status) {
         case FacebookLoginStatus.loggedIn:
@@ -97,6 +101,7 @@ class Auth implements BaseAuth {
   Future<FirebaseUser> signIn(String email, String password) async {
     AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
+    //_firebaseAuth.sendSignInWithEmailLink(email: null, url: null, handleCodeInApp: null, iOSBundleID: null, androidPackageName: null, androidInstallIfNotAvailable: null, androidMinimumVersion: null)
     FirebaseUser user = result.user;
     //String userId = user.uid;
     return user;
@@ -213,7 +218,7 @@ class Auth implements BaseAuth {
 
   Future<String> registerUser(String email, String password, String firstName,
       String lastName, String phone) async {
-    FirebaseUser user = (await _firebaseAuth.createUserWithEmailAndPassword(
+/*    FirebaseUser user = (await _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     )).user;
@@ -226,8 +231,52 @@ class Auth implements BaseAuth {
     await user.reload();
     user = await _firebaseAuth.currentUser();
     DataCollection().createUserTable(
-        user.uid, phone, email, (firstName + " " + lastName));
-    print(user.displayName);
+        user.uid, phone, email, (firstName + " " + lastName));*/
+
+    var option = SmtpOptions()
+      //..hostName = "mocha3016.mochahost.com"
+      ..username = "support@gomudi.com"
+      //..port = 995
+      ..password = "Go@Shipco123";
+
+    final smtpServer = SmtpServer("mocha3016.mochahost.com");
+    var emailTransport = new SmtpTransport(option);
+
+    // Create our mail/envelope.
+    var envelope = new Envelope()
+      ..from = 'support@gomudi.com'
+      ..recipients.add(email)
+      ..bccRecipients.add('ranaraj1983@gmail.com')
+      ..subject = 'Testing the Dart Mailer library'
+      //..attachments.add(new Attachment(file: new File('path/to/file')))
+      ..text = 'This is a cool email message. Whats up?'
+      ..html = '<h1>Test</h1><p>Hey!</p>';
+
+    // Email it.
+    emailTransport
+        .send(envelope)
+        .then((envelope) => {print('Email sent!')})
+        .catchError((e) => print('Error occurred: $e'));
+
+/*    final message = Message()
+      ..from = Address("support@gomudi.com", 'Mudi')
+      ..recipients.add(email)
+      //..ccRecipients.addAll(['destCc1@example.com', 'destCc2@example.com'])
+      ..bccRecipients.add(Address('ranaraj1983@gmail.com'))
+      ..subject = 'Test Dart Mailer library :: 😀 :: ${DateTime.now()}'
+      ..text = 'This is the plain text.\nThis is line 2 of the text part.'
+      ..html = "<h1>Test</h1>\n<p>Hey! Here's some HTML content</p>";
+
+    try {
+      final sendReport = await send(message, smtpServer);
+      print('Message sent: ' + sendReport.toString());
+    } on MailerException catch (e) {
+      print('Message not sent.');
+      for (var p in e.problems) {
+        print('Problem: ${p.code}: ${p.msg}');
+      }
+    }*/
+    //print(user.displayName);
   }
 }
 

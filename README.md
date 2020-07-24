@@ -2,6 +2,11 @@ Plan to apply
 ===============
 animated_text_kit 2.2.0
 ======================
+email
+===============
+support@gomudi.com
+Go@Shipco123
+=================
 # basketapp
 
 A new Flutter application.

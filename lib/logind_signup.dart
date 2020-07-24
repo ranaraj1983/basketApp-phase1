@@ -303,7 +303,7 @@ class login extends State<Login_Screen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          _buildSocialBtn(
+          /*_buildSocialBtn(
                 () {
               Auth().signupWithFacebook(context);
               print('Login with Facebook');
@@ -311,7 +311,7 @@ class login extends State<Login_Screen> {
             AssetImage(
               'images/facebook.jpg',
             ),
-          ),
+          ),*/
           _buildSocialBtn(
                 () async {
               FirebaseUser fUser = await Auth().signupWithGoogle();
@@ -342,7 +342,11 @@ class login extends State<Login_Screen> {
 
   Widget _buildSignupBtn() {
     return GestureDetector(
-      onTap: () => print('Sign Up Button Pressed'),
+      onTap: () => {
+        print('Sign Up Button mm'),
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => Signup_Screen())),
+      },
       child: RichText(
         text: TextSpan(
           children: [

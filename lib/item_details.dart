@@ -219,9 +219,8 @@ class item_details extends State<Item_Details> {
                                                   .data['description'],
                                               quantity.toString(),
                                               (int.parse(this
-                                                          .dataSource
-                                                          .data['price']) *
-                                                      quantity)
+                                                      .dataSource
+                                                      .data['price']))
                                                   .toString(),
                                               random.toString() +
                                                   "_" +
