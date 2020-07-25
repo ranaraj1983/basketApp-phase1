@@ -273,9 +273,40 @@ class Custom_AppBar {
     );
   }
 
-
   Future<List<Product_Item>> _getSearchItem(String text) {
     return DataCollection().getListOfProductItem();
+  }
+
+  setRedeemValue(int redeemAmount) {
+    cartCounter.setRedeemTotalAmount(redeemAmount);
+  }
+
+  int getTotalPrice() {
+    return cartCounter.getTotal;
+  }
+
+  ObservableMap getRedeemMap() {
+    return cartCounter.getRedeemMap;
+  }
+
+  setRedeemMap(String id, int redeemAmount) {
+    cartCounter.setRedeemMap(id, redeemAmount);
+  }
+
+  int getRedeemAmount() {
+    int totalAmount = 0;
+    getRedeemMap().values.forEach((element) {
+      totalAmount += element;
+    });
+    return totalAmount;
+  }
+
+  clearRedeemAmount() {
+    cartCounter.redeemMap.clear();
+  }
+
+  bool isItemAdded() {
+    return cartCounter.cartList.length > 0 ? true : false;
   }
 }
 

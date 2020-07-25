@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:basketapp/model/Product_Item.dart';
 import 'package:mobx/mobx.dart';
 
@@ -16,16 +18,52 @@ abstract class _Cart_Counter with Store {
   Observable list = Observable(new List<Product_Item>());
 
   @observable
+  ObservableMap redeemMap = new ObservableMap<String, int>();
+
+
+  @observable
   ObservableList<Product_Item> cartList = ObservableList<Product_Item>();
 
+  @observable
+  Observable redeemTotalAmount = Observable(0);
+
   //String x = Observable("Test");
+
+  @action
+  void setRedeemMap(String id, int amount) {
+    redeemMap.length == 0
+        ? redeemMap = ObservableMap<String, int>.of({id: amount})
+        : redeemMap.putIfAbsent(id, () => amount);
+    print(redeemMap);
+    //dispose();
+  }
+
+  @action
+  int getRedeemTotalAmount() {
+    return redeemTotalAmount.value;
+    //dispose();
+  }
+
+  @action
+  void resetRedeemAmount(value) {
+    redeemTotalAmount.value = value;
+    print(redeemTotalAmount);
+    //dispose();
+  }
+
+  @action
+  void setRedeemTotalAmount(value) {
+    redeemTotalAmount.value += value;
+    print(redeemTotalAmount);
+    //dispose();
+  }
 
   @action
   void getTotalPrice() {
     cartList.forEach((element) {
       print(element.quantity);
       totalPrice.value +=
-          (int.parse(element.price) * int.parse(element.quantity));
+      (int.parse(element.price) * int.parse(element.quantity));
     });
     //return totalPrice.value;
   }
@@ -97,6 +135,19 @@ abstract class _Cart_Counter with Store {
   int get getTotal {
     print("inside computed" + totalPrice.value.toString());
     return totalPrice.value;
+  }
+
+  @computed
+  int get getTotalRedeemValue {
+    print("inside computed redeem value :: " +
+        redeemTotalAmount.value.toString());
+    return redeemTotalAmount.value;
+  }
+
+  @computed
+  ObservableMap get getRedeemMap {
+    print("inside computed redeem value :: " + redeemMap.toString());
+    return redeemMap;
   }
 
   static final greeting = Observable('Hello World');

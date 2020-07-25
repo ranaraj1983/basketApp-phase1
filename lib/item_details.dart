@@ -60,8 +60,31 @@ class item_details extends State<Item_Details> {
     // TODO: implement build
     final ThemeData theme = Theme.of(context);
     final TextStyle titleStyle =
-    theme.textTheme.headline5.copyWith(color: Colors.white);
-    final TextStyle descriptionStyle = theme.textTheme.subhead;
+        theme.textTheme.headline5.copyWith(color: Colors.white);
+
+    final kHintTextStyle = TextStyle(
+      color: Colors.yellowAccent,
+      fontFamily: 'OpenSans',
+    );
+
+    final kLabelStyle = TextStyle(
+      color: Colors.yellowAccent,
+      fontWeight: FontWeight.bold,
+      fontFamily: 'OpenSans',
+    );
+
+    final kBoxDecorationStyle = BoxDecoration(
+      color: Color(0xFF6CA8F1),
+      borderRadius: BorderRadius.circular(10.0),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black12,
+          blurRadius: 6.0,
+          offset: Offset(0, 2),
+        ),
+      ],
+    );
+    //final TextStyle descriptionStyle = theme.textTheme.subhead;
     IconData _backIcon() {
       switch (Theme.of(context).platform) {
         case TargetPlatform.android:
@@ -130,31 +153,50 @@ class item_details extends State<Item_Details> {
                     ),
                   ),
                   Container(
+                      decoration: kBoxDecorationStyle,
                       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
                       child: DefaultTextStyle(
-                          style: descriptionStyle,
+                          style: kLabelStyle,
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               // three line description
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 8.0),
-                                child: Text(
-                                  this.dataSource.data['itemName'],
-                                  style: descriptionStyle.copyWith(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black87),
+                              Expanded(
+
+                                child: Container(
+                                  padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+
+                                  child: Text(
+                                      this.dataSource.data['itemName'],
+                                      style: kLabelStyle
+                                  ),
                                 ),
+
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 8.0),
-                                child: Text(
-                                  "\₹ " + this.dataSource.data['price'],
-                                  style: descriptionStyle.copyWith(
-                                      fontSize: 20.0, color: Colors.black54),
+                              Expanded(
+
+                                child: Container(
+                                  padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+
+                                  child: Text(
+                                    "\₹ " + this.dataSource.data['price'],
+                                    style: kLabelStyle,
+                                  ),
                                 ),
+
+
+                              ),
+                              Expanded(
+                                child: Container(
+                                  padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+
+                                  child: Text(
+                                    "Quan:- " + this.dataSource.data['unit'],
+                                    style: kLabelStyle,
+                                  ),
+                                ),
+
                               ),
                             ],
                           ))),
@@ -165,7 +207,7 @@ class item_details extends State<Item_Details> {
                               padding:
                               const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 20.0),
                               child: DefaultTextStyle(
-                                  style: descriptionStyle,
+                                  style: kLabelStyle,
                                   child: Row(
                                     mainAxisSize: MainAxisSize.max,
                                     mainAxisAlignment:
@@ -234,9 +276,10 @@ class item_details extends State<Item_Details> {
                                     ],
                                   ))))),
                   Container(
+                      decoration: kBoxDecorationStyle,
                       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
                       child: DefaultTextStyle(
-                          style: descriptionStyle,
+                          style: kLabelStyle,
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -246,16 +289,14 @@ class item_details extends State<Item_Details> {
                                 padding: const EdgeInsets.only(bottom: 8.0),
                                 child: Text(
                                   'Details',
-                                  style: descriptionStyle.copyWith(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black87),
+                                  style: kLabelStyle,
                                 ),
                               ),
                             ],
                           ))),
                   Container(
-                      padding: const EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 0.0),
+
+                  padding: const EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 0.0),
                       child: Text(this.dataSource.data['description'],
                           maxLines: 10,
                           style: TextStyle(

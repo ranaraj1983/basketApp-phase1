@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'package:basketapp/widget/Custom_AppBar.dart';
 import 'package:basketapp/widget/WidgetFactory.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
@@ -134,7 +135,7 @@ class DataCollection {
   }
 
   Future<void> addOrder(ObservableList<Product_Item> cartList, int totalAmount,
-      bool courierChargeApplied) async {
+      bool courierChargeApplied, int totalRedeemAmount) async {
     int courierCharge = 0;
     //int amount = totalAmount;
     courierChargeApplied ? courierCharge = 50 : courierCharge = 0;
@@ -165,6 +166,7 @@ class DataCollection {
       "paymentOption": "COD",
       "customerName": user.displayName,
       "mobileNumber": user.phoneNumber,
+      "redeemAmount": totalRedeemAmount
       //"address" :
     });
 
@@ -509,21 +511,42 @@ class DataCollection {
 
   void addOfferToCustomrWalet(int offerPrice) async {
     String userId = await Auth().getCurrentUserId();
+    String walletId = "#GMOFF" + Random().nextInt(100000).toString();
     firestoreInstance
-        .collection("User").document(userId).collection("Wallet")
-        .document()
-        .setData(
-        {
-          'offerPrice': offerPrice,
-          'date': new DateTime.now(),
-          'status': "NEW"
-        }
-    );
+        .collection("User")
+        .document(userId)
+        .collection("Wallet")
+        .document(walletId)
+        .setData({
+      'offerPrice': offerPrice,
+      'date': new DateTime.now(),
+      'status': "NEW",
+      "type": "CASH",
+      "id": walletId,
+    });
   }
 
   Future getCustomerOfferList() async {
     String userId = await Auth().getCurrentUserId();
-    return await firestoreInstance.collection("User/${userId}/Wallet/").orderBy(
-        "date").getDocuments();
+    return await firestoreInstance
+        .collection("User/${userId}/Wallet/")
+        .orderBy("date", descending: true)
+        .getDocuments();
+  }
+
+  updateWalletTable(ObservableMap redeemMap) async {
+    String userId = await Auth().getCurrentUserId();
+    print(userId);
+    redeemMap.forEach((key, value) {
+      firestoreInstance
+          .collection("User/${userId}/Wallet")
+          .document(key)
+          .setData({
+        'status': "REDEEMED",
+      }, merge: true).then((value) => {
+                Custom_AppBar().clearRedeemAmount(),
+              });
+    });
+    print(userId);
   }
 }

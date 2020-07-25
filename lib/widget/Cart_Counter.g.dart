@@ -15,6 +15,13 @@ mixin _$Cart_Counter on _Cart_Counter, Store {
   int get getTotal => (_$getTotalComputed ??=
           Computed<int>(() => super.getTotal, name: '_Cart_Counter.getTotal'))
       .value;
+  Computed<int> _$getTotalRedeemValueComputed;
+
+  @override
+  int get getTotalRedeemValue => (_$getTotalRedeemValueComputed ??=
+          Computed<int>(() => super.getTotalRedeemValue,
+              name: '_Cart_Counter.getTotalRedeemValue'))
+      .value;
 
   final _$totalPriceAtom = Atom(name: '_Cart_Counter.totalPrice');
 
@@ -61,6 +68,21 @@ mixin _$Cart_Counter on _Cart_Counter, Store {
     });
   }
 
+  final _$redeemMapAtom = Atom(name: '_Cart_Counter.redeemMap');
+
+  @override
+  ObservableMap<dynamic, dynamic> get redeemMap {
+    _$redeemMapAtom.reportRead();
+    return super.redeemMap;
+  }
+
+  @override
+  set redeemMap(ObservableMap<dynamic, dynamic> value) {
+    _$redeemMapAtom.reportWrite(value, super.redeemMap, () {
+      super.redeemMap = value;
+    });
+  }
+
   final _$cartListAtom = Atom(name: '_Cart_Counter.cartList');
 
   @override
@@ -76,8 +98,67 @@ mixin _$Cart_Counter on _Cart_Counter, Store {
     });
   }
 
+  final _$redeemTotalAmountAtom = Atom(name: '_Cart_Counter.redeemTotalAmount');
+
+  @override
+  Observable<dynamic> get redeemTotalAmount {
+    _$redeemTotalAmountAtom.reportRead();
+    return super.redeemTotalAmount;
+  }
+
+  @override
+  set redeemTotalAmount(Observable<dynamic> value) {
+    _$redeemTotalAmountAtom.reportWrite(value, super.redeemTotalAmount, () {
+      super.redeemTotalAmount = value;
+    });
+  }
+
   final _$_Cart_CounterActionController =
   ActionController(name: '_Cart_Counter');
+
+  @override
+  void setRedeemMap(String id, int amount) {
+    final _$actionInfo = _$_Cart_CounterActionController.startAction(
+        name: '_Cart_Counter.setRedeemMap');
+    try {
+      return super.setRedeemMap(id, amount);
+    } finally {
+      _$_Cart_CounterActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  int getRedeemTotalAmount() {
+    final _$actionInfo = _$_Cart_CounterActionController.startAction(
+        name: '_Cart_Counter.getRedeemTotalAmount');
+    try {
+      return super.getRedeemTotalAmount();
+    } finally {
+      _$_Cart_CounterActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void resetRedeemAmount(dynamic value) {
+    final _$actionInfo = _$_Cart_CounterActionController.startAction(
+        name: '_Cart_Counter.resetRedeemAmount');
+    try {
+      return super.resetRedeemAmount(value);
+    } finally {
+      _$_Cart_CounterActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setRedeemTotalAmount(dynamic value) {
+    final _$actionInfo = _$_Cart_CounterActionController.startAction(
+        name: '_Cart_Counter.setRedeemTotalAmount');
+    try {
+      return super.setRedeemTotalAmount(value);
+    } finally {
+      _$_Cart_CounterActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void getTotalPrice() {
@@ -143,11 +224,11 @@ mixin _$Cart_Counter on _Cart_Counter, Store {
   }
 
   @override
-  void removeCartItemToBusket(String itemId) {
+  void removeCartItemToBusket(String itemName) {
     final _$actionInfo = _$_Cart_CounterActionController.startAction(
         name: '_Cart_Counter.removeCartItemToBusket');
     try {
-      return super.removeCartItemToBusket(itemId);
+      return super.removeCartItemToBusket(itemName);
     } finally {
       _$_Cart_CounterActionController.endAction(_$actionInfo);
     }
@@ -170,8 +251,11 @@ mixin _$Cart_Counter on _Cart_Counter, Store {
 totalPrice: ${totalPrice},
 itemCounter: ${itemCounter},
 list: ${list},
+redeemMap: ${redeemMap},
 cartList: ${cartList},
-getTotal: ${getTotal}
+redeemTotalAmount: ${redeemTotalAmount},
+getTotal: ${getTotal},
+getTotalRedeemValue: ${getTotalRedeemValue}
     ''';
   }
 }

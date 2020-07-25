@@ -7,6 +7,7 @@ import 'package:basketapp/item_details.dart';
 import 'package:basketapp/item_screen.dart';
 import 'package:basketapp/OderHistory_Screen.dart';
 import 'package:basketapp/services/Order_Service.dart';
+import 'package:basketapp/widget/Cart_Counter.dart';
 import 'package:basketapp/widget/Custom_AppBar.dart';
 import 'package:basketapp/widget/Navigation_Drwer.dart';
 import 'package:basketapp/widget/WidgetFactory.dart';
@@ -14,18 +15,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Payment_Screen extends StatefulWidget {
-  int totalPrice;
 
-  Payment_Screen(this.totalPrice);
+
+  Payment_Screen();
 
   @override
-  State<StatefulWidget> createState() => _Paymet_Screen(totalPrice);
+  State<StatefulWidget> createState() => _Paymet_Screen();
 }
 
 class _Paymet_Screen extends State<Payment_Screen> {
-  int totalPrice;
+  int totalPrice = Custom_AppBar().getTotalPrice();
+  Map redeemAmountMap = Custom_AppBar().getRedeemMap();
+  int redeemAmount = 0;
 
-  _Paymet_Screen(this.totalPrice);
+  _Paymet_Screen();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool checkboxValueA = true;
@@ -39,9 +42,13 @@ class _Paymet_Screen extends State<Payment_Screen> {
     super.initState();
     Auth().getCurrentUser().then((user) {
       setState(() {
+        redeemAmountMap.values.forEach((element) {
+          redeemAmount += element;
+        });
         firebaseUser = user;
       });
     });
+    print("final redeem value :: " + redeemAmount.toString());
   }
 
   IconData _backIcon() {
@@ -82,67 +89,7 @@ class _Paymet_Screen extends State<Payment_Screen> {
       appBar: Custom_AppBar().getAppBar(context),
       body: new Column(
         children: <Widget>[
-          /*Container(
-              margin: EdgeInsets.all(5.0),
-              child: Card(
-                  child: Container(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          // three line description
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 8.0),
-                                child: Container(
-                                    alignment: Alignment.center,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Text(
-                                          'Delivery',
-                                          style: TextStyle(
-                                              fontSize: 18.0,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black38),
-                                        ),
-                                        IconButton(
-                                            icon: Icon(
-                                              Icons.play_circle_outline,
-                                              color: Colors.black38,
-                                            ),
-                                            onPressed: null)
-                                      ],
-                                    )),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 8.0),
-                                child: Container(
-                                    alignment: Alignment.center,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Text(
-                                          'Payment',
-                                          style: TextStyle(
-                                              fontSize: 18.0,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black),
-                                        ),
-                                        IconButton(
-                                            icon: Icon(
-                                              Icons.check_circle,
-                                              color: Colors.blue,
-                                            ),
-                                            onPressed: null)
-                                      ],
-                                    )),
-                              ),
-                            ],
-                          ),
-                        ],
-                      )))),*/
+
           _verticalDivider(),
           Container(
               margin: EdgeInsets.all(10.0),
@@ -198,38 +145,10 @@ class _Paymet_Screen extends State<Payment_Screen> {
                           ),
                           Divider(),
                           _verticalD(),
-                          /*Container(
-                              padding: EdgeInsets.only(left: 10.0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text("Net Banking",
-                                      maxLines: 10,
-                                      style: TextStyle(
-                                          fontSize: 15.0, color: Colors.black)),
-                                  Radio<int>(
-                                      value: 0,
-                                      groupValue: radioValue,
-                                      onChanged: null),
-                                ],
-                              )),*/
-                      Divider(),
+
+                          Divider(),
                           _verticalD(),
-                          /* Container(
-                              padding: EdgeInsets.only(left: 10.0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                              Text("Credit / Debit / ATM Card",
-                                  maxLines: 10,
-                                  style: TextStyle(
-                                      fontSize: 15.0, color: Colors.black)),
-                              Radio<int>(
-                                  value: 0, groupValue: 0, onChanged: null),
-                            ],
-                              )),*/
+
                           Divider(),
                           _verticalD(),
                           Container(
@@ -272,17 +191,20 @@ class _Paymet_Screen extends State<Payment_Screen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         IconButton(icon: Icon(Icons.info), onPressed: null),
-        Text(
-          'Total : ',
-          style: TextStyle(
-              fontSize: 17.0, color: Colors.black, fontWeight: FontWeight.bold),
+        Expanded(
+          child: Text(
+            'Total : ${totalPrice} - ${redeemAmount} = \₹ ${totalPrice -
+                redeemAmount}',
+            style: TextStyle(
+                fontSize: 17.0,
+                color: Colors.black,
+                fontWeight: FontWeight.bold),
+          ),
         ),
-        Text(
-          '\₹ ${totalPrice}',
-          style: TextStyle(fontSize: 17.0, color: Colors.black54),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+
+
+        Expanded(
+
           child: Container(
             alignment: Alignment.topRight,
             child: OutlineButton(
@@ -291,22 +213,7 @@ class _Paymet_Screen extends State<Payment_Screen> {
                 textColor: Colors.green,
                 onPressed: () {
                   _getScrachCardPopup(context, totalPrice);
-                  /*DataCollection().addOrder(
-                      Custom_AppBar().getCartList(), totalPrice, false);
-                  new Timer(new Duration(seconds: 1), () {
-                    debugPrint("Print after 5 seconds");
-                    DataCollection().getOrderHistoryList();
-                  });
-                  new Timer(new Duration(seconds: 1), () {
-                    debugPrint("Print after 5 seconds");
-                    Custom_AppBar().clearCart();
-                  });
 
-                  //Order_Service().placeOrder();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => OderHistory_Screen()));*/
                 },
                 shape: new OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),
@@ -335,15 +242,19 @@ class _Paymet_Screen extends State<Payment_Screen> {
                   fontWeight: FontWeight.bold),
             ),
             Text(
-              '\₹ ${totalPrice}',
+              ' ${totalPrice} ',
               style: TextStyle(fontSize: 17.0, color: Colors.black54),
             ),
             Text(
-              ' + ',
+              ' - ',
               style: TextStyle(fontSize: 17.0, color: Colors.black54),
             ),
             Text(
-              '50 = ${totalPrice + 50}',
+              ' ${redeemAmount}',
+              style: TextStyle(fontSize: 17.0, color: Colors.black54),
+            ),
+            Text(
+              ' + 50 = \₹ ${(totalPrice - redeemAmount) + 50}',
               style: TextStyle(fontSize: 17.0, color: Colors.black54),
             ),
           ],

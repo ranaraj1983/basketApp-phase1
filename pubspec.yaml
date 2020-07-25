@@ -58,6 +58,7 @@ dependencies:
   flutter_mailer: ^0.4.1+1
   mailer2:
   mailer:
+  intl:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -69,7 +70,7 @@ dev_dependencies:
     sdk: flutter
 
 
-  build_runner: ^1.10.0
+  build_runner:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

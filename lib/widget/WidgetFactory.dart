@@ -30,7 +30,8 @@ class WidgetFactory {
     });
   }
 
-  Widget getSearchListView(BuildContext context, var categorySnapshot, var itemSnapshot) {
+  Widget getSearchListView(
+      BuildContext context, var categorySnapshot, var itemSnapshot) {
     return ListView(
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
@@ -401,7 +402,7 @@ class WidgetFactory {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    Payment_Screen(cartCounter.getTotal)
+                                    Payment_Screen()
                             )
                         );
                       } else {
@@ -433,8 +434,7 @@ class WidgetFactory {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                Payment_Screen(
-                                                    cartCounter.getTotal)
+                                                Payment_Screen()
                                         )
                                     );
                                   },
@@ -567,6 +567,7 @@ class WidgetFactory {
                         user.email,
                         "India");
                   }
+
                 },
               ),
             ],
@@ -819,20 +820,32 @@ class WidgetFactory {
       title: 'You\'ve won a scratch card',
       desc: "error.toString()",
       btnOkOnPress: () async {
-        await DataCollection()
-            .addOrder(Custom_AppBar().getCartList(), totalPrice, true)
-            .then((value) => {
-                  DataCollection().addOfferToCustomrWalet(offerPrice),
-                  print("then"),
-                })
-            .whenComplete(() => {
-                  Custom_AppBar().clearCart(),
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => OderHistory_Screen())),
-                  print("complete"),
-                });
+        CircularProgressIndicator(
+          backgroundColor: Colors.yellowAccent,
+        );
+        await DataCollection().addOrder(
+            Custom_AppBar().getCartList(), totalPrice, true,
+            Custom_AppBar().getRedeemAmount()).then((value) =>
+        {
+          DataCollection().addOfferToCustomrWalet(offerPrice),
+
+
+        }).whenComplete(() =>
+        {
+
+          Custom_AppBar().clearCart(),
+          //Custom_AppBar().clearRedeemMap(),
+          DataCollection().updateWalletTable(Custom_AppBar().getRedeemMap()),
+
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => OderHistory_Screen()
+              )
+          ),
+
+        });
+
 
         /* */
       },

@@ -181,7 +181,6 @@ class PdfGenerator {
     QuerySnapshot itemList = await DataCollection()
         .getSubCollectionOfOrder(itemData['orderId']);
 
-
     int i = 0;
     itemList.documents.forEach((element) {
       double price = double.parse(element.data['price']);
@@ -191,14 +190,27 @@ class PdfGenerator {
       print(element.data['itemName']);
     });
 
-    itemData['courierCharge'] > 0 ? addProducts(
-        "# " + (++i).toString() + " Delivery charge",
-        itemData['courierCharge'].toString(), 50, 1,
-        50.0 * 1, grid)
-        : addProducts("# " + (++i).toString() + "Delivery charge",
-        itemData['courierCharge'].toString(), 0, 0,
-        0.0, grid);
+    itemData['courierCharge'] > 0
+        ? addProducts(
+            "# " + (++i).toString(),
+            " Delivery charge",
+            double.parse(itemData['courierCharge'].toString()),
+            1,
+            (double.parse(itemData['courierCharge'].toString()) * 1),
+            grid)
+        : addProducts(
+            "# " + (++i).toString(), "Delivery charge", 0, 0, 0.0, grid);
 
+    itemData['redeemAmount'] > 0
+        ? addProducts(
+            "# " + (++i).toString(),
+            " Discount availed",
+            double.parse(itemData['redeemAmount'].toString()),
+            1,
+            -(double.parse(itemData['redeemAmount'].toString()) * 1),
+            grid)
+        : addProducts(
+            "# " + (++i).toString(), " Discount availed", 0, 0, 0.0, grid);
 
     //Apply the table built-in style
     grid.applyBuiltInStyle(PdfGridBuiltInStyle.listTable4Accent5);

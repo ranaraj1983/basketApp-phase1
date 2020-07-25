@@ -12,8 +12,11 @@ Go@Shipco123
 A new Flutter application.
 
 command to run .g file
-
+=============================
+flutter packages pub run build_runner build --delete-conflicting-outputs
 flutter pub run build_runner build
+
+============
 
 https://ptyagicodecamp.github.io/loading-image-from-firebase-storage-in-flutter-app-android-ios-web.html
 https://github.com/ptyagicodecamp/flutter_cookbook/tree/widgets/flutter_widgets
