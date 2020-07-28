@@ -216,22 +216,27 @@ class item_details extends State<Item_Details> {
                                       // three line description
                                       Row(
                                         children: <Widget>[
-                                          new IconButton(
-                                              icon: Icon(_add_icon(),
-                                                  color: Colors.amber.shade500),
-                                              onPressed: () => add()),
-                                          Container(
-                                            margin: EdgeInsets.only(left: 2.0),
-                                          ),
-                                          Text("$quantity"),
-                                          Container(
-                                            margin: EdgeInsets.only(right: 2.0),
-                                          ),
-                                          new IconButton(
-                                              icon: Icon(_sub_icon(),
-                                                  color: Colors.amber.shade500),
-                                              onPressed: () => minus()),
-                                        ],
+                                      new IconButton(
+                                          icon: Icon(_add_icon(),
+                                              color: Colors.amber.shade500),
+                                          onPressed: () => add()),
+                                      Container(
+                                        margin: EdgeInsets.only(left: 2.0),
+                                      ),
+                                      Text(
+                                        "$quantity",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(right: 2.0),
+                                      ),
+                                      new IconButton(
+                                          icon: Icon(_sub_icon(),
+                                              color: Colors.amber.shade500),
+                                          onPressed: () => minus()),
+                                    ],
                                       ),
 
                                       Padding(
@@ -245,30 +250,35 @@ class item_details extends State<Item_Details> {
                                             color: Colors.pinkAccent,
                                             shape: RoundedRectangleBorder(
                                                 borderRadius:
-                                                BorderRadius.circular(10)),
+                                                BorderRadius.circular(10)
+                                            ),
                                             child: const Text('Add'),
                                             onPressed: () {
-                                          int random =
+                                              int random =
                                               new Random().nextInt(100000);
 
-                                          if (quantity <= 0) quantity = 1;
-                                          Custom_AppBar().addItemToCart(
-                                              this.dataSource.data['itemId'],
-                                              this.dataSource.data['itemName'],
-                                              this.dataSource.data['imageUrl'],
+                                              if (quantity <= 0) quantity = 1;
+                                              Custom_AppBar().addItemToCart(
+                                                  this.dataSource
+                                                      .data['itemId'],
+                                                  this.dataSource
+                                                      .data['itemName'],
+                                                  this.dataSource
+                                                      .data['imageUrl'],
                                               this
                                                   .dataSource
                                                   .data['description'],
-                                              quantity.toString(),
-                                              (int.parse(this
+                                                  quantity.toString(),
+                                                  (int.parse(this
                                                       .dataSource
                                                       .data['price']))
-                                                  .toString(),
-                                              random.toString() +
-                                                  "_" +
-                                                  this
-                                                      .dataSource
-                                                      .data['itemName']);
+                                                      .toString(),
+                                                  random.toString() +
+                                                      "_" +
+                                                      this
+                                                          .dataSource
+                                                          .data['itemName']
+                                              );
                                         },
                                           ),
                                         ),

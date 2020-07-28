@@ -52,11 +52,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "910878509521-3a6ku5cre825hcqab6354e9b67okhpoh.apps.googleusercontent.com",
+          "client_id": "910878509521-15rqiqibi7bntrr07oh7s8efnc2f5k5c.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.shipco.basketapp",
             "certificate_hash": "da8f29ae60117ffd936c914d29f5624a84486651"
+          }
+        },
+        {
+          "client_id": "910878509521-796drtpadeotjbfetpcnidm24m0gmo36.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shipco.basketapp",
+            "certificate_hash": "1284c59fe55c3854be89b1b88e9a02842df6cc95"
           }
         },
         {

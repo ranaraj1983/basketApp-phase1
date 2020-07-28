@@ -4,6 +4,7 @@ import 'package:basketapp/model/Order.dart';
 import 'package:basketapp/model/User.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -61,14 +62,14 @@ class Auth implements BaseAuth {
   }
 
   Future<FirebaseUser> signupWithFacebook(BuildContext context) async {
-    /*final FacebookLogin facebookSignIn = new FacebookLogin();
+    final FacebookLogin facebookSignIn = new FacebookLogin();
     try {
       var user = await facebookSignIn.logIn(['email', 'public_profile']);
-      print(user);
+      print(user.accessToken);
     } catch (error) {
       print(error);
-    }*/
-    /* .then((result) async {
+    }
+/*    await facebookSignIn.logIn(['email', 'public_profile']).then((result) async {
       switch (result.status) {
         case FacebookLoginStatus.loggedIn:
           await _firebaseAuth

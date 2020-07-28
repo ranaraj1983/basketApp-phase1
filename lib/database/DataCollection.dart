@@ -120,9 +120,10 @@ class DataCollection {
 
   Future getOrderHistoryList() async {
     String userId = await Auth().getCurrentUserId();
-
     QuerySnapshot qs = await firestoreInstance
         .collection("Order")
+        //.orderBy("orderDate", descending: true)
+        .where("userId", isEqualTo: userId)
         .orderBy("orderDate", descending: true)
         .getDocuments();
 

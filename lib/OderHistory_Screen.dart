@@ -144,6 +144,7 @@ class _OrderHistory_Screen extends State<OderHistory_Screen> {
 
   Widget _getOrderHistoryPage(BuildContext context) {
     return FutureBuilder(
+      initialData: null,
       future: DataCollection().getOrderHistoryList(),
       builder: (_, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -173,8 +174,8 @@ class _OrderHistory_Screen extends State<OderHistory_Screen> {
                                 child: Text(itemData['orderId'] +
                                     "\n \n Date " +
                                     DateTime.parse(itemData['orderDate']
-                                            .toDate()
-                                            .toString())
+                                        .toDate()
+                                        .toString())
                                         .toLocal()
                                         .toString()),
                               ),

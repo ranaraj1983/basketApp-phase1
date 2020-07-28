@@ -303,7 +303,7 @@ class login extends State<Login_Screen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          /*_buildSocialBtn(
+/*          _buildSocialBtn(
                 () {
               Auth().signupWithFacebook(context);
               print('Login with Facebook');

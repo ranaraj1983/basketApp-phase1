@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <resources>
-    <string name="app_name">basketapp</string>
-    <string name="facebook_app_id">629883000986830</string>
-    <string name="fb_login_protocol_scheme">fb629883000986830</string>
+    <string name="app_name">gomudi.com</string>
+    <string name="facebook_app_id">583133119242357</string>
+    <string name="fb_login_protocol_scheme">fb583133119242357</string>
 </resources>
 
 

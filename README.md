@@ -29,7 +29,7 @@ https://github.com/mayuriruparel/flutter_demo_apps
 keytool -genkey -v -keystore ~/key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias key
 
 flutter clean
-go topubspec.yaml and change build version
+go to pubspec.yaml and change build version
 flutter build appbundle
 flutter build apk --split-per-abi
 
@@ -57,6 +57,9 @@ Valid from: Thu Jul 02 13:00:12 IST 2020 until: Mon Nov 18 13:00:12 IST 2047
 Certificate fingerprints:
 	 SHA1: 4D:92:63:15:2D:30:7E:36:44:43:DA:34:ED:A8:90:5F:67:64:D2:F6
 	 SHA256: 18:1F:21:31:43:4D:FA:A6:58:C5:0E:0D:E1:37:56:20:F4:94:8D:D2:32:E9:F9:41:C5:8F:D0:B8:25:67:BB:7C
+
+	 dev SH1:da:8f:29:ae:60:11:7f:fd:93:6c:91:4d:29:f5:62:4a:84:48:66:51
+     SHA256: 2d:87:c4:7d:95:8d:dd:3b:da:78:55:eb:ba:06:6c:7e:7a:0f:a5:1f:8e:a7:78:d1:31:6a:d4:c0:a1:95:a4:ec
 Signature algorithm name: SHA256withRSA
 Subject Public Key Algorithm: 2048-bit RSA key
 Version: 3
@@ -82,6 +85,14 @@ keytool -list -v \
 
 facebook
 ===========
+development key
+
+ga0RGNYHvNM5d0SLGQfpQWAPGJ8=
+===============================
+release key
+
+nQvNkpDsLvKow0qPyod3lLptNh0=
+===================
 keytool -exportcert -alias key -keystore /Users/dasinfosolutions/ | openssl sha1 -binary | openssl base64
 nQvNkpDsLvKow0qPyod3lLptNh0=
 TZJjFS0wfjZEQ9o07aiQX2dk0vY=
